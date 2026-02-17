@@ -9,11 +9,12 @@
 
 ; ── Workspace Widget ──────────────────────────────────────
 (defwidget workspaces-widget [wsdata]
-  (box :class "workspaces" :orientation "h" :spacing 8 :halign "start"
+  (box :class "workspaces" :orientation "h" :spacing 0 :halign "start"
     (for ws in {wsdata.workspaces}
       (button :class "ws ${ws.state}"
               :onclick "wmctrl -s ${ws.index}"
-        (label :text {ws.icon})))))
+              :width 32 :height 32
+        (label :text {ws.icon} :halign "center" :valign "center")))))
 
 ; ── DateTime Widget ───────────────────────────────────────
 (defwidget datetime-widget []

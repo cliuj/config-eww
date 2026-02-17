@@ -45,16 +45,15 @@ async def watch_xprop(screen: int):
 
     # Event loop — run blocking X11 event reads in a thread
     loop = asyncio.get_event_loop()
+    last = None
 
     while True:
-        # Wait for the X11 fd to be readable
-        await loop.run_in_executor(None, lambda: dpy.next_event())
-        # Drain any pending events
-        while dpy.pending_events():
-            dpy.next_event()
-        # Re-read the property (coalesce multiple events)
+        event = await loop.run_in_executor(None, dpy.next_event)
+        if event.type != X.PropertyNotify or event.atom != atom:
+            continue
         value = read_property(dpy, root, atom)
-        if value:
+        if value and value != last:
+            last = value
             print(json.dumps(parse_log(value)), flush=True)
 
 
