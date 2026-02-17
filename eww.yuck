@@ -1,10 +1,8 @@
 ; ── Variables ──────────────────────────────────────────────
-(deflisten ws-0 :initial '{"layout":"BSP","workspaces":[]}'
-  "scripts/get-workspaces.sh 0")
-(deflisten ws-1 :initial '{"layout":"BSP","workspaces":[]}'
-  "scripts/get-workspaces.sh 1")
-(deflisten gap-0 :initial "40" "scripts/get-layout-gap.sh 0")
-(deflisten gap-1 :initial "40" "scripts/get-layout-gap.sh 1")
+(deflisten bar-0 :initial '{"layout":"BSP","gap":40,"workspaces":[]}'
+  "python3 scripts/bar-data.py 0")
+(deflisten bar-1 :initial '{"layout":"BSP","gap":40,"workspaces":[]}'
+  "python3 scripts/bar-data.py 1")
 
 (defpoll datetime :interval "1s"
   `date '+%a %H:%M, %b %d'`)
@@ -23,12 +21,12 @@
     (label :text datetime)))
 
 ; ── Top Bar Layout ────────────────────────────────────────
-(defwidget top-bar-layout [wsdata gap]
+(defwidget top-bar-layout [bardata]
   (box :class "top-bar-outer"
-       :style "padding: 14px ${gap}px 0 ${gap}px"
+       :style "padding: 14px ${bardata.gap}px 0 ${bardata.gap}px"
     (box :class "top-bar"
       (centerbox :orientation "h"
-        (workspaces-widget :wsdata wsdata)
+        (workspaces-widget :wsdata bardata)
         (datetime-widget)
         (box)))))
 
@@ -41,7 +39,7 @@
   :reserve (struts :distance "46px" :side "top")
   :windowtype "dock"
   :wm-ignore false
-  (top-bar-layout :wsdata ws-0 :gap gap-0))
+  (top-bar-layout :bardata bar-0))
 
 ; Monitor 1 (DisplayPort-1, 2240x1400)
 (defwindow top-bar-1
@@ -51,4 +49,4 @@
   :reserve (struts :distance "46px" :side "top")
   :windowtype "dock"
   :wm-ignore false
-  (top-bar-layout :wsdata ws-1 :gap gap-1))
+  (top-bar-layout :bardata bar-1))
