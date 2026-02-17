@@ -1,0 +1,54 @@
+; ── Variables ──────────────────────────────────────────────
+(deflisten ws-0 :initial '{"layout":"BSP","workspaces":[]}'
+  "scripts/get-workspaces.sh 0")
+(deflisten ws-1 :initial '{"layout":"BSP","workspaces":[]}'
+  "scripts/get-workspaces.sh 1")
+(deflisten gap-0 :initial "40" "scripts/get-layout-gap.sh 0")
+(deflisten gap-1 :initial "40" "scripts/get-layout-gap.sh 1")
+
+(defpoll datetime :interval "1s"
+  `date '+%a %H:%M, %b %d'`)
+
+; ── Workspace Widget ──────────────────────────────────────
+(defwidget workspaces-widget [wsdata]
+  (box :class "workspaces" :orientation "h" :spacing 8 :halign "start"
+    (for ws in {wsdata.workspaces}
+      (button :class "ws ${ws.state}"
+              :onclick "wmctrl -s ${ws.index}"
+        (label :text {ws.icon})))))
+
+; ── DateTime Widget ───────────────────────────────────────
+(defwidget datetime-widget []
+  (box :class "datetime" :halign "center"
+    (label :text datetime)))
+
+; ── Top Bar Layout ────────────────────────────────────────
+(defwidget top-bar-layout [wsdata gap]
+  (box :class "top-bar-outer"
+    (box :class "top-bar"
+         :style "margin: 20px ${gap}px 0 ${gap}px"
+      (centerbox :orientation "h"
+        (workspaces-widget :wsdata wsdata)
+        (datetime-widget)
+        (box)))))
+
+; ── Windows ───────────────────────────────────────────────
+; Monitor 0 (DisplayPort-0, 2560x1440)
+(defwindow top-bar
+  :monitor 0
+  :geometry (geometry :x "0%" :y "0px" :width "100%" :height "56px" :anchor "top center")
+  :stacking "fg"
+  :reserve (struts :distance "56px" :side "top")
+  :windowtype "dock"
+  :wm-ignore false
+  (top-bar-layout :wsdata ws-0 :gap gap-0))
+
+; Monitor 1 (DisplayPort-1, 2240x1400)
+(defwindow top-bar-1
+  :monitor 1
+  :geometry (geometry :x "0%" :y "0px" :width "100%" :height "56px" :anchor "top center")
+  :stacking "fg"
+  :reserve (struts :distance "56px" :side "top")
+  :windowtype "dock"
+  :wm-ignore false
+  (top-bar-layout :wsdata ws-1 :gap gap-1))

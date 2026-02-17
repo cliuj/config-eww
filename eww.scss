@@ -1,0 +1,53 @@
+$bg:        #1a1b26;
+$fg:        #c0caf5;
+$accent:    #7aa2f7;
+$muted:     #414868;
+$bg-light:  #24283b;
+
+* {
+  all: unset;
+  font-family: "JetBrainsMono Nerd Font", monospace;
+  font-size: 13px;
+  color: $fg;
+}
+
+// Outer box — transparent so margins/gap show desktop
+.top-bar-outer {
+  background-color: transparent;
+}
+
+// Inner visible bar — rounded, colored
+.top-bar {
+  background-color: $bg;
+  border-radius: 8px;
+  padding: 0 16px;
+  min-height: 36px;
+}
+
+// Workspaces
+.workspaces {
+  .ws {
+    font-size: 15px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    color: $muted;
+    transition: all 0.2s ease;
+
+    &.current {
+      color: $bg;
+      background-color: $accent;
+      font-weight: bold;
+    }
+    &.hidden { color: $fg; }
+    &.visible { color: $fg; background-color: $bg-light; }
+    &.empty { color: $muted; opacity: 0.5; }
+    &.urgent { color: #f7768e; }
+    &:hover { color: $fg; background-color: $bg-light; }
+  }
+}
+
+// DateTime
+.datetime {
+  color: $fg;
+  font-weight: bold;
+}
