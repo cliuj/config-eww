@@ -13,7 +13,9 @@
     (for ws in {wsdata.workspaces}
       (button :class "ws ${ws.state}"
               :onclick "wmctrl -s ${ws.index}"
-        (label :text {ws.label})))))
+        (box :orientation "v" :space-evenly false :valign "center"
+          (label :text {ws.label})
+          (box :class "ws-dot ${ws.state == 'empty' ? '' : 'populated'}" :halign "center"))))))
 
 ; ── DateTime Widget ───────────────────────────────────────
 (defwidget datetime-widget []

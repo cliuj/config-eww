@@ -39,12 +39,21 @@ $bg-light:  #24283b;
     //   visible  — shown on another monitor but not focused
     //   hidden   — has windows but not on screen
     //   empty    — no windows at all
-    &.current { color: $fg; background-color: $accent; }
+    &.current { color: $fg; background-color: darken($accent, 15%); }
     &.hidden { color: $fg; }
     &.visible { color: $fg; background-color: $bg-light; }
     &.empty { color: $muted; opacity: 0.5; }
     &.urgent { color: #f7768e; }
     &:hover { color: $fg; background-color: $bg-light; }
+
+    .ws-dot {
+      min-width: 4px;
+      min-height: 4px;
+      border-radius: 0px;
+      margin-top: 2px;
+
+      &.populated { background-color: $fg; }
+    }
   }
 }
 
