@@ -27,18 +27,19 @@ $bg-light:  #24283b;
 // Workspaces
 .workspaces {
   .ws {
-    font-size: 10px;
+    font-size: 13px;
     min-width: 36px;
     min-height: 36px;
     border-radius: 0px;
-    color: $muted;
+    color: $fg;
     transition: all 0.2s ease;
 
-    &.current {
-      color: $bg;
-      background-color: $accent;
-      font-weight: bold;
-    }
+    // States come from xmonad via _XMONAD_LOG_N xprop:
+    //   current  — focused workspace
+    //   visible  — shown on another monitor but not focused
+    //   hidden   — has windows but not on screen
+    //   empty    — no windows at all
+    &.current { color: $fg; background-color: $accent; }
     &.hidden { color: $fg; }
     &.visible { color: $fg; background-color: $bg-light; }
     &.empty { color: $muted; opacity: 0.5; }

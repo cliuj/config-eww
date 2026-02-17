@@ -6,12 +6,7 @@ import sys
 
 from Xlib import X, display
 
-ICONS = {
-    "term": "svg/terminal-svgrepo-com.svg",
-    "code": "svg/code-svgrepo-com.svg",
-    "browser": "svg/browser-firefox-svgrepo-com.svg",
-    "comm": "svg/communication-bubble-chat-comments-conversation-message-icon-svgrepo-com.svg",
-}
+LABELS = {"term": "1", "code": "2", "browser": "3", "comm": "4"}
 GAP_MAP = {"BSP": 40, "Monocle": 40, "Tall": 30, "Mirror Tall": 30, "Fullscreen": 0}
 
 
@@ -23,7 +18,7 @@ def parse_log(value: str) -> dict:
             continue
         state, name, idx = entry.split(":")
         workspaces.append({"state": state, "name": name,
-                           "icon": ICONS.get(name, name), "index": int(idx)})
+                           "label": LABELS.get(name, name), "index": int(idx)})
     workspaces.sort(key=lambda w: w["index"])
     return {"layout": layout, "gap": GAP_MAP.get(layout, 40), "workspaces": workspaces}
 
