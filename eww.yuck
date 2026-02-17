@@ -13,8 +13,7 @@
     (for ws in {wsdata.workspaces}
       (button :class "ws ${ws.state}"
               :onclick "wmctrl -s ${ws.index}"
-              :width 32 :height 32
-        (label :text {ws.icon} :halign "center" :valign "center")))))
+        (image :path {ws.icon} :image-width 14 :image-height 14)))))
 
 ; ── DateTime Widget ───────────────────────────────────────
 (defwidget datetime-widget []

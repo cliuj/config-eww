@@ -6,7 +6,12 @@ import sys
 
 from Xlib import X, display
 
-ICONS = {"term": "\uf120", "code": "\uf121", "browser": "\uf0ac", "comm": "\uf086"}
+ICONS = {
+    "term": "svg/terminal-svgrepo-com.svg",
+    "code": "svg/code-svgrepo-com.svg",
+    "browser": "svg/browser-firefox-svgrepo-com.svg",
+    "comm": "svg/communication-bubble-chat-comments-conversation-message-icon-svgrepo-com.svg",
+}
 GAP_MAP = {"BSP": 40, "Monocle": 40, "Tall": 30, "Mirror Tall": 30, "Fullscreen": 0}
 
 
