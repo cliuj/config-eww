@@ -20,11 +20,17 @@ xprop -notype -spy -root 8t "_XMONAD_LOG_$SCREEN" | while IFS= read -r line; do
     ws_part=$(echo "$raw" | sed 's/|||.*//')
     layout=$(echo "$raw" | sed 's/.*|||//')
 
-    # Parse workspace entries into JSON array
+    # Sort workspace entries by index so display order is stable
+    IFS='|' read -ra entries <<<"$ws_part"
+    sorted=$(for entry in "${entries[@]}"; do
+        [ -z "$entry" ] && continue
+        echo "$entry"
+    done | sort -t: -k3 -n)
+
+    # Parse sorted entries into JSON array
     json='{"layout":"'"$layout"'","workspaces":['
     first=true
-    IFS='|' read -ra entries <<<"$ws_part"
-    for entry in "${entries[@]}"; do
+    while IFS= read -r entry; do
         [ -z "$entry" ] && continue
         state=$(echo "$entry" | cut -d: -f1)
         name=$(echo "$entry" | cut -d: -f2)
@@ -34,7 +40,7 @@ xprop -notype -spy -root 8t "_XMONAD_LOG_$SCREEN" | while IFS= read -r line; do
         $first || json+=','
         first=false
         json+='{"state":"'"$state"'","name":"'"$name"'","icon":"'"$icon"'","index":'"$idx"'}'
-    done
+    done <<<"$sorted"
     json+=']}'
 
     echo "$json"
