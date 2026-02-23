@@ -106,10 +106,27 @@ $bg-light:  #24283b;
     }
   }
 
-  .power-menu {
-    .ctrl-btn {
-      min-width: 28px;
-      min-height: 28px;
-    }
+}
+
+// Power dropdown (separate window)
+.power-dropdown {
+  background-color: $bg;
+  border-radius: 12px;
+  padding: 6px;
+
+  .power-icon {
+    min-width: 20px;
+    min-height: 20px;
+  }
+
+  .power-item {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: $fg;
+    transition: all 0.2s ease;
+
+    &:hover { background-color: $bg-light; }
+    &.poweroff:hover { color: #f7768e; background-color: rgba(247, 118, 142, 0.15); }
   }
 }

@@ -8,8 +8,6 @@
   `date '+%a %H:%M, %b %d'`)
 (deflisten volume-data :initial '{"volume":50,"muted":false}'
   "scripts/volume-watcher.sh")
-(defvar power-open-0 false)
-(defvar power-open-1 false)
 (defvar volume-open-0 false)
 (defvar volume-open-1 false)
 
@@ -36,7 +34,7 @@
     ; Volume icon + revealer
     (box :orientation "h" :spacing 0
       (button :class "ctrl-btn"
-              :onclick "${mon == 0 ? (volume-open-0 ? '' : 'eww update power-open-0=false &&') : (volume-open-1 ? '' : 'eww update power-open-1=false &&')} eww update volume-open-${mon}=${mon == 0 ? !volume-open-0 : !volume-open-1}"
+              :onclick "eww close power-menu-${mon} 2>/dev/null; eww update volume-open-${mon}=${mon == 0 ? !volume-open-0 : !volume-open-1}"
               :tooltip "${volume-data.muted ? 'Unmute' : 'Mute'}"
         (image :path {volume-data.muted ? "svg/volume-xmark-svgrepo-com.svg" : "svg/volume-max-svgrepo-com.svg"}
                :image-width 18 :image-height 18))
@@ -47,30 +45,34 @@
                  :min 0 :max 101
                  :value {volume-data.volume}
                  :onchange "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ {}%"))))
-    ; Power icon + revealer
-    (box :orientation "h" :spacing 0
-      (button :class "ctrl-btn"
-              :onclick "${mon == 0 ? (power-open-0 ? '' : 'eww update volume-open-0=false &&') : (power-open-1 ? '' : 'eww update volume-open-1=false &&')} eww update power-open-${mon}=${mon == 0 ? !power-open-0 : !power-open-1}"
-              :tooltip "Power"
-        (image :path "svg/power-icon-svgrepo-com.svg"
-               :image-width 18 :image-height 18))
-      (revealer :transition "slideleft" :reveal {mon == 0 ? power-open-0 : power-open-1} :duration "200ms"
-        (box :class "dropdown power-menu" :orientation "h" :spacing 0
-          (button :class "ctrl-btn sleep"
-                  :onclick "systemctl suspend"
-                  :tooltip "Sleep"
-            (image :path "svg/sleep-moon-svgrepo-com.svg"
-                   :image-width 16 :image-height 16))
-          (button :class "ctrl-btn restart"
-                  :onclick "systemctl reboot"
-                  :tooltip "Restart"
-            (image :path "svg/restart-svgrepo-com.svg"
-                   :image-width 16 :image-height 16))
-          (button :class "ctrl-btn poweroff"
-                  :onclick "systemctl poweroff"
-                  :tooltip "Power Off"
-            (image :path "svg/power-icon-svgrepo-com.svg"
-                   :image-width 16 :image-height 16)))))))
+    ; Power icon → opens dropdown window
+    (button :class "ctrl-btn"
+            :onclick "eww update volume-open-${mon}=false; eww open --toggle power-menu-${mon}"
+            :tooltip "Power"
+      (image :path "svg/power-off-svgrepo-com.svg"
+             :image-width 18 :image-height 18))))
+
+; ── Power Menu Dropdown ─────────────────────────────────
+(defwidget power-menu-widget [mon]
+  (box :class "power-dropdown" :orientation "v" :spacing 4
+    (button :class "power-item"
+            :onclick "eww close power-menu-${mon}; systemctl suspend"
+      (box :orientation "h" :spacing 10
+        (box :class "power-icon" (image :path "svg/sleep-moon-svgrepo-com.svg"
+               :image-width 16 :image-height 16))
+        (label :text "Sleep")))
+    (button :class "power-item"
+            :onclick "eww close power-menu-${mon}; systemctl reboot"
+      (box :orientation "h" :spacing 10
+        (box :class "power-icon" (image :path "svg/restart-svgrepo-com.svg"
+               :image-width 16 :image-height 16))
+        (label :text "Restart")))
+    (button :class "power-item poweroff"
+            :onclick "eww close power-menu-${mon}; systemctl poweroff"
+      (box :orientation "h" :spacing 10
+        (box :class "power-icon" (image :path "svg/power-off-svgrepo-com.svg"
+               :image-width 16 :image-height 16))
+        (label :text "Power Off")))))
 
 ; ── Top Bar Layout ────────────────────────────────────────
 (defwidget top-bar-layout [bardata mon]
@@ -101,3 +103,20 @@
   :windowtype "dock"
   :wm-ignore false
   (top-bar-layout :bardata bar-1 :mon 1))
+
+; ── Power Menu Dropdown Windows ─────────────────────────
+(defwindow power-menu-0
+  :monitor 0
+  :geometry (geometry :x "-40px" :y "52px" :width "160px" :anchor "top right")
+  :stacking "overlay"
+  :windowtype "toolbar"
+  :wm-ignore true
+  (power-menu-widget :mon 0))
+
+(defwindow power-menu-1
+  :monitor 1
+  :geometry (geometry :x "-40px" :y "52px" :width "160px" :anchor "top right")
+  :stacking "overlay"
+  :windowtype "toolbar"
+  :wm-ignore true
+  (power-menu-widget :mon 1))
