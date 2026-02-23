@@ -6,6 +6,12 @@
 
 (defpoll datetime :interval "1s"
   `date '+%a %H:%M, %b %d'`)
+(deflisten volume-data :initial '{"volume":50,"muted":false}'
+  "scripts/volume-watcher.sh")
+(defvar power-open-0 false)
+(defvar power-open-1 false)
+(defvar volume-open-0 false)
+(defvar volume-open-1 false)
 
 ; ── Workspace Widget ──────────────────────────────────────
 (defwidget workspaces-widget [wsdata]
@@ -24,14 +30,56 @@
     (box :class "datetime"
       (label :text datetime))))
 
+; ── Controls Widget ──────────────────────────────────────
+(defwidget controls-widget [mon]
+  (box :class "pill controls" :orientation "h" :spacing 0 :halign "end"
+    ; Volume icon + revealer
+    (box :orientation "h" :spacing 0
+      (button :class "ctrl-btn"
+              :onclick "${mon == 0 ? (volume-open-0 ? '' : 'eww update power-open-0=false &&') : (volume-open-1 ? '' : 'eww update power-open-1=false &&')} eww update volume-open-${mon}=${mon == 0 ? !volume-open-0 : !volume-open-1}"
+              :tooltip "${volume-data.muted ? 'Unmute' : 'Mute'}"
+        (image :path {volume-data.muted ? "svg/volume-xmark-svgrepo-com.svg" : "svg/volume-max-svgrepo-com.svg"}
+               :image-width 18 :image-height 18))
+      (revealer :transition "slideleft" :reveal {mon == 0 ? volume-open-0 : volume-open-1} :duration "200ms"
+        (box :class "dropdown volume-dropdown" :orientation "h" :spacing 8
+          (scale :class "vol-slider"
+                 :orientation "h"
+                 :min 0 :max 101
+                 :value {volume-data.volume}
+                 :onchange "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ {}%"))))
+    ; Power icon + revealer
+    (box :orientation "h" :spacing 0
+      (button :class "ctrl-btn"
+              :onclick "${mon == 0 ? (power-open-0 ? '' : 'eww update volume-open-0=false &&') : (power-open-1 ? '' : 'eww update volume-open-1=false &&')} eww update power-open-${mon}=${mon == 0 ? !power-open-0 : !power-open-1}"
+              :tooltip "Power"
+        (image :path "svg/power-icon-svgrepo-com.svg"
+               :image-width 18 :image-height 18))
+      (revealer :transition "slideleft" :reveal {mon == 0 ? power-open-0 : power-open-1} :duration "200ms"
+        (box :class "dropdown power-menu" :orientation "h" :spacing 0
+          (button :class "ctrl-btn sleep"
+                  :onclick "systemctl suspend"
+                  :tooltip "Sleep"
+            (image :path "svg/sleep-moon-svgrepo-com.svg"
+                   :image-width 16 :image-height 16))
+          (button :class "ctrl-btn restart"
+                  :onclick "systemctl reboot"
+                  :tooltip "Restart"
+            (image :path "svg/restart-svgrepo-com.svg"
+                   :image-width 16 :image-height 16))
+          (button :class "ctrl-btn poweroff"
+                  :onclick "systemctl poweroff"
+                  :tooltip "Power Off"
+            (image :path "svg/power-icon-svgrepo-com.svg"
+                   :image-width 16 :image-height 16)))))))
+
 ; ── Top Bar Layout ────────────────────────────────────────
-(defwidget top-bar-layout [bardata]
+(defwidget top-bar-layout [bardata mon]
   (box :class "top-bar-outer"
        :style "padding: 14px ${bardata.gap}px 0 ${bardata.gap}px"
     (centerbox :orientation "h"
       (workspaces-widget :wsdata bardata)
       (datetime-widget)
-      (box))))
+      (controls-widget :mon mon))))
 
 ; ── Windows ───────────────────────────────────────────────
 ; Monitor 0 (DisplayPort-0, 2560x1440)
@@ -42,7 +90,7 @@
   :reserve (struts :distance "46px" :side "top")
   :windowtype "dock"
   :wm-ignore false
-  (top-bar-layout :bardata bar-0))
+  (top-bar-layout :bardata bar-0 :mon 0))
 
 ; Monitor 1 (DisplayPort-1, 2240x1400)
 (defwindow top-bar-1
@@ -52,4 +100,4 @@
   :reserve (struts :distance "46px" :side "top")
   :windowtype "dock"
   :wm-ignore false
-  (top-bar-layout :bardata bar-1))
+  (top-bar-layout :bardata bar-1 :mon 1))
