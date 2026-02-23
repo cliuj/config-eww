@@ -11,26 +11,25 @@ $bg-light:  #24283b;
   color: $fg;
 }
 
-// Outer box — transparent so margins/gap show desktop
+// Outer container — transparent, no bar
 .top-bar-outer {
   background-color: transparent;
 }
 
-// Inner visible bar — rounded, colored
-.top-bar {
+// Pill — shared rounded container for widget groups
+.pill {
   background-color: $bg;
-  border-radius: 8px;
-  padding: 0 16px;
-  min-height: 32px;
+  border-radius: 999px;
+  padding: 4px 4px;
 }
 
 // Workspaces
 .workspaces {
   .ws {
     font-size: 13px;
-    min-width: 36px;
-    min-height: 36px;
-    border-radius: 0px;
+    min-width: 32px;
+    min-height: 32px;
+    border-radius: 999px;
     color: $fg;
     transition: all 0.2s ease;
 
@@ -49,7 +48,7 @@ $bg-light:  #24283b;
     .ws-dot {
       min-width: 4px;
       min-height: 4px;
-      border-radius: 0px;
+      border-radius: 999px;
       margin-top: 2px;
 
       &.populated { background-color: $fg; }
@@ -59,6 +58,7 @@ $bg-light:  #24283b;
 
 // DateTime
 .datetime {
+  padding: 0 12px;
   color: $fg;
   font-weight: bold;
 }

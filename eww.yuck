@@ -9,28 +9,29 @@
 
 ; ── Workspace Widget ──────────────────────────────────────
 (defwidget workspaces-widget [wsdata]
-  (box :class "workspaces" :orientation "h" :spacing 0 :halign "start"
-    (for ws in {wsdata.workspaces}
-      (button :class "ws ${ws.state}"
-              :onclick "wmctrl -s ${ws.index}"
-        (box :orientation "v" :space-evenly false :valign "center"
-          (label :text {ws.label})
-          (box :class "ws-dot ${ws.state == 'empty' ? '' : 'populated'}" :halign "center"))))))
+  (box :class "pill" :halign "start"
+    (box :class "workspaces" :orientation "h" :spacing 0
+      (for ws in {wsdata.workspaces}
+        (button :class "ws ${ws.state}"
+                :onclick "wmctrl -s ${ws.index}"
+          (box :orientation "v" :space-evenly false :valign "center"
+            (label :text {ws.label})
+            (box :class "ws-dot ${ws.state == 'empty' ? '' : 'populated'}" :halign "center")))))))
 
 ; ── DateTime Widget ───────────────────────────────────────
 (defwidget datetime-widget []
-  (box :class "datetime" :halign "center"
-    (label :text datetime)))
+  (box :class "pill" :halign "center"
+    (box :class "datetime"
+      (label :text datetime))))
 
 ; ── Top Bar Layout ────────────────────────────────────────
 (defwidget top-bar-layout [bardata]
   (box :class "top-bar-outer"
        :style "padding: 14px ${bardata.gap}px 0 ${bardata.gap}px"
-    (box :class "top-bar"
-      (centerbox :orientation "h"
-        (workspaces-widget :wsdata bardata)
-        (datetime-widget)
-        (box)))))
+    (centerbox :orientation "h"
+      (workspaces-widget :wsdata bardata)
+      (datetime-widget)
+      (box))))
 
 ; ── Windows ───────────────────────────────────────────────
 ; Monitor 0 (DisplayPort-0, 2560x1440)
