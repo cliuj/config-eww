@@ -57,21 +57,21 @@
   (box :class "power-dropdown" :orientation "v" :spacing 4
     (button :class "power-item"
             :onclick "eww close power-menu-${mon}; systemctl suspend"
-      (box :orientation "h" :spacing 10
-        (box :class "power-icon" (image :path "svg/sleep-moon-svgrepo-com.svg"
-               :image-width 16 :image-height 16))
+      (box :orientation "h" :spacing 6 :space-evenly false
+        (image :path "svg/sleep-moon-svgrepo-com.svg"
+               :image-width 16 :image-height 16)
         (label :text "Sleep")))
     (button :class "power-item"
             :onclick "eww close power-menu-${mon}; systemctl reboot"
-      (box :orientation "h" :spacing 10
-        (box :class "power-icon" (image :path "svg/restart-svgrepo-com.svg"
-               :image-width 16 :image-height 16))
+      (box :orientation "h" :spacing 6 :space-evenly false
+        (image :path "svg/restart-svgrepo-com.svg"
+               :image-width 16 :image-height 16)
         (label :text "Restart")))
     (button :class "power-item poweroff"
             :onclick "eww close power-menu-${mon}; systemctl poweroff"
-      (box :orientation "h" :spacing 10
-        (box :class "power-icon" (image :path "svg/power-off-svgrepo-com.svg"
-               :image-width 16 :image-height 16))
+      (box :orientation "h" :spacing 6 :space-evenly false
+        (image :path "svg/power-off-svgrepo-com.svg"
+               :image-width 16 :image-height 16)
         (label :text "Power Off")))))
 
 ; ── Top Bar Layout ────────────────────────────────────────
@@ -107,7 +107,7 @@
 ; ── Power Menu Dropdown Windows ─────────────────────────
 (defwindow power-menu-0
   :monitor 0
-  :geometry (geometry :x "-40px" :y "52px" :width "160px" :anchor "top right")
+  :geometry (geometry :x "-40px" :y "52px" :width "120px" :anchor "top right")
   :stacking "overlay"
   :windowtype "toolbar"
   :wm-ignore true
@@ -115,7 +115,7 @@
 
 (defwindow power-menu-1
   :monitor 1
-  :geometry (geometry :x "-40px" :y "52px" :width "160px" :anchor "top right")
+  :geometry (geometry :x "-40px" :y "52px" :width "120px" :anchor "top right")
   :stacking "overlay"
   :windowtype "toolbar"
   :wm-ignore true

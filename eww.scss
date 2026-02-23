@@ -115,12 +115,12 @@ $bg-light:  #24283b;
   padding: 6px;
 
   .power-icon {
-    min-width: 20px;
-    min-height: 20px;
+    min-width: 0px;
+    min-height: 0px;
   }
 
   .power-item {
-    padding: 8px 12px;
+    padding: 4px 6px;
     border-radius: 8px;
     font-size: 13px;
     color: $fg;
