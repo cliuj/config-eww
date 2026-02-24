@@ -41,14 +41,14 @@
             :onrightclick "scripts/toggle-mute.sh"
             :tooltip "${volume-data.muted ? 'Unmute' : 'Mute'}"
       (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
-        (image :path {volume-data.muted ? "svg/volume-xmark-svgrepo-com.svg" : "svg/volume-max-svgrepo-com.svg"}
+        (image :path {volume-data.muted ? "svg/volume/volume-xmark-svgrepo-com.svg" : "svg/volume/volume-max-svgrepo-com.svg"}
                :image-width 16 :image-height 16)
         (label :class "vol-label" :text "${volume-data.volume}%")))
     ; Power icon
     (button :class "ctrl-btn power-circle"
             :onclick "eww close volume-ctl-${mon} 2>/dev/null; eww open --toggle power-menu-${mon}"
             :tooltip "Power"
-      (image :path "svg/power-off-svgrepo-com.svg"
+      (image :path "svg/powermenu/power-off-svgrepo-com.svg"
              :image-width 16 :image-height 16))))
 
 ; ── Power Menu Dropdown ─────────────────────────────────
@@ -57,17 +57,17 @@
     (button :class "power-item"
             :onclick "eww close power-menu-${mon}; scripts/power-action.sh suspend"
             :tooltip "Sleep"
-      (image :path "svg/sleep-moon-svgrepo-com.svg"
+      (image :path "svg/powermenu/sleep-moon-svgrepo-com.svg"
              :image-width 16 :image-height 16))
     (button :class "power-item"
             :onclick "eww close power-menu-${mon}; scripts/power-action.sh reboot"
             :tooltip "Restart"
-      (image :path "svg/restart-svgrepo-com.svg"
+      (image :path "svg/powermenu/restart-svgrepo-com.svg"
              :image-width 16 :image-height 16))
     (button :class "power-item poweroff"
             :onclick "eww close power-menu-${mon}; scripts/power-action.sh poweroff"
             :tooltip "Power Off"
-      (image :path "svg/power-off-svgrepo-com.svg"
+      (image :path "svg/powermenu/power-off-svgrepo-com.svg"
              :image-width 16 :image-height 16))))
 
 ; ── Calendar Dropdown ───────────────────────────────────
