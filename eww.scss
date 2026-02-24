@@ -125,11 +125,11 @@ $bg-light:  #24283b;
 .calendar-dropdown {
   background-color: $bg;
   border-radius: 12px;
-  padding: 8px;
+  padding: 20px;
 
   .cal {
     color: $fg;
-    font-size: 12px;
+    font-size: 16px;
 
     &.header {
       color: $accent;
