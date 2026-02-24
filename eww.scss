@@ -23,6 +23,11 @@ $bg-light:  #24283b;
   padding: 4px 4px;
 }
 
+// Layout
+.layout {
+  padding: 0 4px;
+}
+
 // Workspaces
 .workspaces {
   .ws {
@@ -98,6 +103,17 @@ $bg-light:  #24283b;
 .vol-label {
   font-size: 12px;
   font-weight: bold;
+}
+
+// System info
+.sysinfo {
+  padding: 0 4px;
+
+  .sysinfo-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: $muted;
+  }
 }
 
 // Volume dropdown (separate window)

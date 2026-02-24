@@ -6,13 +6,21 @@
   "scripts/datetime.sh")
 (deflisten volume-data :initial '{"volume":50,"muted":false}'
   "scripts/volume-watcher.sh")
+(defpoll sysinfo :interval "2s" :initial '{"cpu":0,"ram_used":"0.0","ram_total":"0.0"}'
+  "python3 scripts/sysinfo.py")
 (defpoll weather-data :interval "600s" :initial '{"icon":"svg/weather/weather-few-clouds-svgrepo-com.svg","temp":"--","condition":"Unknown"}'
   "python3 scripts/weather.py")
 
 
-; ── Workspace Widget ──────────────────────────────────────
+; ── Workspace + Layout Widget ────────────────────────────
 (defwidget workspaces-widget [wsdata]
-  (box :class "pill" :halign "start"
+  (box :class "pill" :orientation "h" :spacing 4 :halign "start" :space-evenly false
+    (button :class "layout" :onclick "python3 scripts/cycle-layout.py next-layout" :tooltip {wsdata.layout}
+      (image :path {wsdata.layout == "BSP" ? "svg/layouts/layout-svgrepo-com.svg"
+                  : wsdata.layout == "Tall" ? "svg/layouts/layout-5-svgrepo-com.svg"
+                  : wsdata.layout == "Mirror Tall" ? "svg/layouts/layout-4-svgrepo-com.svg"
+                  : "svg/layouts/layout-7-svgrepo-com.svg"}
+             :image-width 30 :image-height 30))
     (box :class "workspaces" :orientation "h" :spacing 0
       (for ws in {wsdata.workspaces}
         (button :class "ws ${ws.state}"
@@ -34,7 +42,16 @@
 
 ; ── Controls Widget ──────────────────────────────────────
 (defwidget controls-widget [mon]
-  (box :class "pill" :orientation "h" :spacing 4 :halign "end" :space-evenly false
+  (box :class "pill" :orientation "h" :spacing 12 :halign "end" :space-evenly false
+    ; System info: CPU + RAM
+    (button :class "sysinfo" :onclick "scripts/open-htop.sh"
+      (box :orientation "h" :spacing 8 :space-evenly false :valign "center"
+        (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
+          (image :path "svg/sysinfo/cpu-svgrepo-com.svg" :image-width 16 :image-height 16)
+          (label :class "sysinfo-label" :text "${sysinfo.cpu}%"))
+        (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
+          (image :path "svg/sysinfo/ram-storage-svgrepo-com.svg" :image-width 16 :image-height 16)
+          (label :class "sysinfo-label" :text "${sysinfo.ram_used}G"))))
     ; Volume: icon + percentage
     (button :class "ctrl-btn vol-btn"
             :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"
