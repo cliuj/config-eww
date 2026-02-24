@@ -8,8 +8,7 @@
   `date '+%a %H:%M, %b %d'`)
 (deflisten volume-data :initial '{"volume":50,"muted":false}'
   "scripts/volume-watcher.sh")
-(defvar volume-open-0 false)
-(defvar volume-open-1 false)
+
 
 ; ── Workspace Widget ──────────────────────────────────────
 (defwidget workspaces-widget [wsdata]
@@ -30,49 +29,55 @@
 
 ; ── Controls Widget ──────────────────────────────────────
 (defwidget controls-widget [mon]
-  (box :class "pill controls" :orientation "h" :spacing 0 :halign "end"
-    ; Volume icon + revealer
-    (box :orientation "h" :spacing 0
-      (button :class "ctrl-btn"
-              :onclick "eww close power-menu-${mon} 2>/dev/null; eww update volume-open-${mon}=${mon == 0 ? !volume-open-0 : !volume-open-1}"
+  (box :orientation "h" :spacing 4 :halign "end" :space-evenly false
+    ; Volume pill: icon + percentage
+    (box :class "pill"
+      (button :class "ctrl-btn vol-btn"
+              :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"
+              :onrightclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
               :tooltip "${volume-data.muted ? 'Unmute' : 'Mute'}"
-        (image :path {volume-data.muted ? "svg/volume-xmark-svgrepo-com.svg" : "svg/volume-max-svgrepo-com.svg"}
-               :image-width 18 :image-height 18))
-      (revealer :transition "slideleft" :reveal {mon == 0 ? volume-open-0 : volume-open-1} :duration "200ms"
-        (box :class "dropdown volume-dropdown" :orientation "h" :spacing 8
-          (scale :class "vol-slider"
-                 :orientation "h"
-                 :min 0 :max 101
-                 :value {volume-data.volume}
-                 :onchange "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ {}%"))))
-    ; Power icon → opens dropdown window
-    (button :class "ctrl-btn"
-            :onclick "eww update volume-open-${mon}=false; eww open --toggle power-menu-${mon}"
+        (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
+          (image :path {volume-data.muted ? "svg/volume-xmark-svgrepo-com.svg" : "svg/volume-max-svgrepo-com.svg"}
+                 :image-width 16 :image-height 16)
+          (label :class "vol-label" :text "${volume-data.volume}%"))))
+    ; Power circle: standalone icon
+    (button :class "power-circle"
+            :halign "end"
+            :hexpand false
+            :onclick "eww close volume-ctl-${mon} 2>/dev/null; eww open --toggle power-menu-${mon}"
             :tooltip "Power"
       (image :path "svg/power-off-svgrepo-com.svg"
-             :image-width 18 :image-height 18))))
+             :image-width 16 :image-height 16))))
 
 ; ── Power Menu Dropdown ─────────────────────────────────
 (defwidget power-menu-widget [mon]
   (box :class "power-dropdown" :orientation "v" :spacing 4
     (button :class "power-item"
             :onclick "eww close power-menu-${mon}; systemctl suspend"
-      (box :orientation "h" :spacing 6 :space-evenly false
-        (image :path "svg/sleep-moon-svgrepo-com.svg"
-               :image-width 16 :image-height 16)
-        (label :text "Sleep")))
+            :tooltip "Sleep"
+      (image :path "svg/sleep-moon-svgrepo-com.svg"
+             :image-width 16 :image-height 16))
     (button :class "power-item"
             :onclick "eww close power-menu-${mon}; systemctl reboot"
-      (box :orientation "h" :spacing 6 :space-evenly false
-        (image :path "svg/restart-svgrepo-com.svg"
-               :image-width 16 :image-height 16)
-        (label :text "Restart")))
+            :tooltip "Restart"
+      (image :path "svg/restart-svgrepo-com.svg"
+             :image-width 16 :image-height 16))
     (button :class "power-item poweroff"
             :onclick "eww close power-menu-${mon}; systemctl poweroff"
-      (box :orientation "h" :spacing 6 :space-evenly false
-        (image :path "svg/power-off-svgrepo-com.svg"
-               :image-width 16 :image-height 16)
-        (label :text "Power Off")))))
+            :tooltip "Power Off"
+      (image :path "svg/power-off-svgrepo-com.svg"
+             :image-width 16 :image-height 16))))
+
+; ── Volume Dropdown ──────────────────────────────────────
+(defwidget volume-ctl-widget []
+  (box :class "volume-dropdown" :orientation "v" :vexpand true
+    (scale :class "vol-slider"
+           :orientation "v"
+           :flipped true
+           :vexpand true
+           :min 0 :max 101
+           :value {volume-data.volume}
+           :onchange "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ {}%")))
 
 ; ── Top Bar Layout ────────────────────────────────────────
 (defwidget top-bar-layout [bardata mon]
@@ -107,7 +112,7 @@
 ; ── Power Menu Dropdown Windows ─────────────────────────
 (defwindow power-menu-0
   :monitor 0
-  :geometry (geometry :x "-40px" :y "52px" :width "120px" :anchor "top right")
+  :geometry (geometry :x "-36px" :y "52px" :width "40px" :anchor "top right")
   :stacking "overlay"
   :windowtype "toolbar"
   :wm-ignore true
@@ -115,8 +120,25 @@
 
 (defwindow power-menu-1
   :monitor 1
-  :geometry (geometry :x "-40px" :y "52px" :width "120px" :anchor "top right")
+  :geometry (geometry :x "-36px" :y "52px" :width "40px" :anchor "top right")
   :stacking "overlay"
   :windowtype "toolbar"
   :wm-ignore true
   (power-menu-widget :mon 1))
+
+; ── Volume Dropdown Windows ─────────────────────────────
+(defwindow volume-ctl-0
+  :monitor 0
+  :geometry (geometry :x "-95px" :y "52px" :width "40px" :height "140px" :anchor "top right")
+  :stacking "overlay"
+  :windowtype "toolbar"
+  :wm-ignore true
+  (volume-ctl-widget))
+
+(defwindow volume-ctl-1
+  :monitor 1
+  :geometry (geometry :x "-95px" :y "52px" :width "40px" :height "140px" :anchor "top right")
+  :stacking "overlay"
+  :windowtype "toolbar"
+  :wm-ignore true
+  (volume-ctl-widget))
