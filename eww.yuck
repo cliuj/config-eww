@@ -23,11 +23,10 @@
 
 ; ── DateTime + Weather Widget ────────────────────────────
 (defwidget datetime-weather-widget [mon]
-  (box :class "pill" :orientation "h" :spacing 0 :space-evenly false :halign "center"
+  (box :class "pill" :orientation "h" :spacing 4 :space-evenly false :halign "center"
     (button :class "datetime"
             :onclick "eww open --toggle calendar-${mon}"
       (label :text datetime))
-    (box :class "pill-sep")
     (box :class "weather" :orientation "h" :spacing 6 :space-evenly false :valign "center"
          :tooltip {weather-data.condition}
       (image :path {weather-data.icon} :image-width 16 :image-height 16)
@@ -35,21 +34,18 @@
 
 ; ── Controls Widget ──────────────────────────────────────
 (defwidget controls-widget [mon]
-  (box :orientation "h" :spacing 4 :halign "end" :space-evenly false
-    ; Volume pill: icon + percentage
-    (box :class "pill"
-      (button :class "ctrl-btn vol-btn"
-              :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"
-              :onrightclick "scripts/toggle-mute.sh"
-              :tooltip "${volume-data.muted ? 'Unmute' : 'Mute'}"
-        (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
-          (image :path {volume-data.muted ? "svg/volume-xmark-svgrepo-com.svg" : "svg/volume-max-svgrepo-com.svg"}
-                 :image-width 16 :image-height 16)
-          (label :class "vol-label" :text "${volume-data.volume}%"))))
-    ; Power circle: standalone icon
-    (button :class "power-circle"
-            :halign "end"
-            :hexpand false
+  (box :class "pill" :orientation "h" :spacing 4 :halign "end" :space-evenly false
+    ; Volume: icon + percentage
+    (button :class "ctrl-btn vol-btn"
+            :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"
+            :onrightclick "scripts/toggle-mute.sh"
+            :tooltip "${volume-data.muted ? 'Unmute' : 'Mute'}"
+      (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
+        (image :path {volume-data.muted ? "svg/volume-xmark-svgrepo-com.svg" : "svg/volume-max-svgrepo-com.svg"}
+               :image-width 16 :image-height 16)
+        (label :class "vol-label" :text "${volume-data.volume}%")))
+    ; Power icon
+    (button :class "ctrl-btn power-circle"
             :onclick "eww close volume-ctl-${mon} 2>/dev/null; eww open --toggle power-menu-${mon}"
             :tooltip "Power"
       (image :path "svg/power-off-svgrepo-com.svg"

@@ -11,15 +11,15 @@ $bg-light:  #24283b;
   color: $fg;
 }
 
-// Outer container — transparent, no bar
+// Outer container — transparent, holds the three groups
 .top-bar-outer {
   background-color: transparent;
 }
 
-// Pill — shared rounded container for widget groups
+// Pill — rounded rectangle container for each widget group
 .pill {
   background-color: $bg;
-  border-radius: 999px;
+  border-radius: 12px;
   padding: 4px 4px;
 }
 
@@ -63,13 +63,6 @@ $bg-light:  #24283b;
   font-weight: bold;
 }
 
-// Pill separator
-.pill-sep {
-  min-width: 1px;
-  min-height: 16px;
-  background-color: $muted;
-  margin: 0 2px;
-}
 
 // Weather
 .weather {
@@ -88,12 +81,11 @@ $bg-light:  #24283b;
   &:hover { background-color: $bg-light; }
 }
 
-// Power icon — standalone circle (no pill wrapper)
+// Power icon — standalone circle
 .power-circle {
   min-width: 32px;
   min-height: 32px;
   border-radius: 999px;
-  background-color: $bg;
   transition: all 0.2s ease;
 
   &:hover { background-color: $bg-light; }
