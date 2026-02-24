@@ -6,6 +6,8 @@
   "scripts/datetime.sh")
 (deflisten volume-data :initial '{"volume":50,"muted":false}'
   "scripts/volume-watcher.sh")
+(defpoll weather-data :interval "600s" :initial '{"icon":"svg/weather/weather-few-clouds-svgrepo-com.svg","temp":"--","condition":"Unknown"}'
+  "python3 scripts/weather.py")
 
 
 ; ── Workspace Widget ──────────────────────────────────────
@@ -19,12 +21,17 @@
             (label :text {ws.label})
             (box :class "ws-dot ${ws.state == 'empty' ? '' : 'populated'}" :halign "center")))))))
 
-; ── DateTime Widget ───────────────────────────────────────
-(defwidget datetime-widget [mon]
-  (button :class "pill" :halign "center"
-          :onclick "eww open --toggle calendar-${mon}"
-    (box :class "datetime"
-      (label :text datetime))))
+; ── DateTime + Weather Widget ────────────────────────────
+(defwidget datetime-weather-widget [mon]
+  (box :class "pill" :orientation "h" :spacing 0 :space-evenly false :halign "center"
+    (button :class "datetime"
+            :onclick "eww open --toggle calendar-${mon}"
+      (label :text datetime))
+    (box :class "pill-sep")
+    (box :class "weather" :orientation "h" :spacing 6 :space-evenly false :valign "center"
+         :tooltip {weather-data.condition}
+      (image :path {weather-data.icon} :image-width 16 :image-height 16)
+      (label :class "weather-temp" :text {weather-data.temp}))))
 
 ; ── Controls Widget ──────────────────────────────────────
 (defwidget controls-widget [mon]
@@ -92,7 +99,7 @@
        :style "padding: 14px ${bardata.gap}px 0 ${bardata.gap}px"
     (centerbox :orientation "h"
       (workspaces-widget :wsdata bardata)
-      (datetime-widget :mon mon)
+      (datetime-weather-widget :mon mon)
       (controls-widget :mon mon))))
 
 ; ── Windows ───────────────────────────────────────────────

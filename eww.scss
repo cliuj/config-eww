@@ -58,9 +58,24 @@ $bg-light:  #24283b;
 
 // DateTime
 .datetime {
-  padding: 0 12px;
+  padding: 0 10px;
   color: $fg;
   font-weight: bold;
+}
+
+// Pill separator
+.pill-sep {
+  min-width: 1px;
+  min-height: 16px;
+  background-color: $muted;
+  margin: 0 2px;
+}
+
+// Weather
+.weather {
+  padding: 0 10px;
+
+  .weather-temp { font-size: 12px; font-weight: bold; }
 }
 
 // Shared control button style
