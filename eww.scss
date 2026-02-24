@@ -121,6 +121,38 @@ $bg-light:  #24283b;
   }
 }
 
+// Calendar dropdown (separate window)
+.calendar-dropdown {
+  background-color: $bg;
+  border-radius: 12px;
+  padding: 8px;
+
+  .cal {
+    color: $fg;
+    font-size: 12px;
+
+    &.header {
+      color: $accent;
+      font-weight: bold;
+    }
+
+    &.highlight {
+      color: $accent;
+      font-weight: bold;
+    }
+
+    &:selected {
+      background-color: $accent;
+      color: $bg;
+      border-radius: 6px;
+    }
+
+    &:indeterminate {
+      color: $muted;
+    }
+  }
+}
+
 // Power dropdown (separate window)
 .power-dropdown {
   background-color: $bg;

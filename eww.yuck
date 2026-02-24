@@ -22,8 +22,9 @@
             (box :class "ws-dot ${ws.state == 'empty' ? '' : 'populated'}" :halign "center")))))))
 
 ; ── DateTime Widget ───────────────────────────────────────
-(defwidget datetime-widget []
-  (box :class "pill" :halign "center"
+(defwidget datetime-widget [mon]
+  (button :class "pill" :halign "center"
+          :onclick "eww open --toggle calendar-${mon}"
     (box :class "datetime"
       (label :text datetime))))
 
@@ -68,6 +69,14 @@
       (image :path "svg/power-off-svgrepo-com.svg"
              :image-width 16 :image-height 16))))
 
+; ── Calendar Dropdown ───────────────────────────────────
+(defwidget calendar-widget []
+  (box :class "calendar-dropdown"
+    (calendar :class "cal"
+              :show-heading true
+              :show-day-names true
+              :show-week-numbers false)))
+
 ; ── Volume Dropdown ──────────────────────────────────────
 (defwidget volume-ctl-widget []
   (box :class "volume-dropdown" :orientation "v" :vexpand true
@@ -85,7 +94,7 @@
        :style "padding: 14px ${bardata.gap}px 0 ${bardata.gap}px"
     (centerbox :orientation "h"
       (workspaces-widget :wsdata bardata)
-      (datetime-widget)
+      (datetime-widget :mon mon)
       (controls-widget :mon mon))))
 
 ; ── Windows ───────────────────────────────────────────────
@@ -142,3 +151,20 @@
   :windowtype "toolbar"
   :wm-ignore true
   (volume-ctl-widget))
+
+; ── Calendar Dropdown Windows ─────────────────────────
+(defwindow calendar-0
+  :monitor 0
+  :geometry (geometry :x "0%" :y "52px" :anchor "top center")
+  :stacking "overlay"
+  :windowtype "toolbar"
+  :wm-ignore true
+  (calendar-widget))
+
+(defwindow calendar-1
+  :monitor 1
+  :geometry (geometry :x "0%" :y "52px" :anchor "top center")
+  :stacking "overlay"
+  :windowtype "toolbar"
+  :wm-ignore true
+  (calendar-widget))
