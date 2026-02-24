@@ -5,7 +5,7 @@
   "python3 scripts/bar-data.py 1")
 
 (defpoll datetime :interval "1s"
-  `date '+%a %H:%M, %b %d'`)
+  "scripts/datetime.sh")
 (deflisten volume-data :initial '{"volume":50,"muted":false}'
   "scripts/volume-watcher.sh")
 
@@ -16,7 +16,7 @@
     (box :class "workspaces" :orientation "h" :spacing 0
       (for ws in {wsdata.workspaces}
         (button :class "ws ${ws.state}"
-                :onclick "wmctrl -s ${ws.index}"
+                :onclick "scripts/switch-workspace.sh ${ws.index}"
           (box :orientation "v" :space-evenly false :valign "center"
             (label :text {ws.label})
             (box :class "ws-dot ${ws.state == 'empty' ? '' : 'populated'}" :halign "center")))))))
@@ -34,7 +34,7 @@
     (box :class "pill"
       (button :class "ctrl-btn vol-btn"
               :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"
-              :onrightclick "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+              :onrightclick "scripts/toggle-mute.sh"
               :tooltip "${volume-data.muted ? 'Unmute' : 'Mute'}"
         (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
           (image :path {volume-data.muted ? "svg/volume-xmark-svgrepo-com.svg" : "svg/volume-max-svgrepo-com.svg"}
@@ -53,17 +53,17 @@
 (defwidget power-menu-widget [mon]
   (box :class "power-dropdown" :orientation "v" :spacing 4
     (button :class "power-item"
-            :onclick "eww close power-menu-${mon}; systemctl suspend"
+            :onclick "eww close power-menu-${mon}; scripts/power-action.sh suspend"
             :tooltip "Sleep"
       (image :path "svg/sleep-moon-svgrepo-com.svg"
              :image-width 16 :image-height 16))
     (button :class "power-item"
-            :onclick "eww close power-menu-${mon}; systemctl reboot"
+            :onclick "eww close power-menu-${mon}; scripts/power-action.sh reboot"
             :tooltip "Restart"
       (image :path "svg/restart-svgrepo-com.svg"
              :image-width 16 :image-height 16))
     (button :class "power-item poweroff"
-            :onclick "eww close power-menu-${mon}; systemctl poweroff"
+            :onclick "eww close power-menu-${mon}; scripts/power-action.sh poweroff"
             :tooltip "Power Off"
       (image :path "svg/power-off-svgrepo-com.svg"
              :image-width 16 :image-height 16))))
@@ -77,7 +77,7 @@
            :vexpand true
            :min 0 :max 101
            :value {volume-data.volume}
-           :onchange "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ {}%")))
+           :onchange "scripts/set-volume.sh {}")))
 
 ; ── Top Bar Layout ────────────────────────────────────────
 (defwidget top-bar-layout [bardata mon]
