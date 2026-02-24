@@ -10,6 +10,8 @@
   "python3 scripts/sysinfo.py")
 (defpoll weather-data :interval "600s" :initial '{"icon":"svg/weather/weather-few-clouds-svgrepo-com.svg","temp":"--","condition":"Unknown"}'
   "python3 scripts/weather.py")
+(defpoll network-data :interval "5s" :initial '{"type":"none","state":"disconnected","name":"...","signal":0,"icon":"svg/network/wifi-off.svg"}'
+  "scripts/network.sh")
 
 
 ; ── Workspace + Layout Widget ────────────────────────────
@@ -52,6 +54,13 @@
         (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
           (image :path "svg/sysinfo/ram-storage-svgrepo-com.svg" :image-width 16 :image-height 16)
           (label :class "sysinfo-label" :text "${sysinfo.ram_used}G"))))
+    ; Network: icon + SSID
+    (button :class "ctrl-btn net-btn"
+            :onclick "nm-connection-editor &"
+            :tooltip "${network-data.name} (${network-data.signal}%)"
+      (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
+        (image :path {network-data.icon} :image-width 16 :image-height 16)
+        (label :class "net-label" :text {network-data.name})))
     ; Volume: icon + percentage
     (button :class "ctrl-btn vol-btn"
             :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"

@@ -96,6 +96,15 @@ $bg-light:  #24283b;
   &:hover { background-color: $bg-light; }
 }
 
+.net-btn {
+  padding: 0 8px 0 6px;
+}
+
+.net-label {
+  font-size: 12px;
+  font-weight: bold;
+}
+
 .vol-btn {
   padding: 0 8px 0 6px;
 }
