@@ -105,6 +105,14 @@ $bg-light:  #24283b;
   font-weight: bold;
 }
 
+.vpn-btn {
+  min-width: unset;
+  min-height: unset;
+  opacity: 0.4;
+
+  &.vpn-on { opacity: 1; }
+}
+
 .vol-btn {
   padding: 0 8px 0 6px;
 }

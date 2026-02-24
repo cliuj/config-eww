@@ -12,6 +12,8 @@
   "python3 scripts/weather.py")
 (defpoll network-data :interval "5s" :initial '{"type":"none","state":"disconnected","name":"...","signal":0,"icon":"svg/network/wifi-off.svg"}'
   "scripts/network.sh")
+(deflisten vpn-data :initial '{"state":"disconnected","server":""}'
+  "scripts/mullvad-watcher.sh")
 
 
 ; ── Workspace + Layout Widget ────────────────────────────
@@ -44,9 +46,9 @@
 
 ; ── Controls Widget ──────────────────────────────────────
 (defwidget controls-widget [mon]
-  (box :class "pill" :orientation "h" :spacing 12 :halign "end" :space-evenly false
+  (box :class "pill" :orientation "h" :spacing 12 :halign "end" :space-evenly false :valign "center"
     ; System info: CPU + RAM
-    (button :class "sysinfo" :onclick "scripts/open-htop.sh"
+    (button :class "ctrl-btn sysinfo" :onclick "scripts/open-htop.sh"
       (box :orientation "h" :spacing 8 :space-evenly false :valign "center"
         (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
           (image :path "svg/sysinfo/cpu-svgrepo-com.svg" :image-width 16 :image-height 16)
@@ -54,13 +56,19 @@
         (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
           (image :path "svg/sysinfo/ram-storage-svgrepo-com.svg" :image-width 16 :image-height 16)
           (label :class "sysinfo-label" :text "${sysinfo.ram_used}G"))))
-    ; Network: icon + SSID
-    (button :class "ctrl-btn net-btn"
-            :onclick "nm-connection-editor &"
-            :tooltip "${network-data.name} (${network-data.signal}%)"
-      (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
-        (image :path {network-data.icon} :image-width 16 :image-height 16)
-        (label :class "net-label" :text {network-data.name})))
+    ; VPN + Network grouped together
+    (box :orientation "h" :spacing 0 :space-evenly false :valign "center"
+      (button :class "ctrl-btn vpn-btn ${vpn-data.state == 'connected' ? 'vpn-on' : ''}"
+              :onclick "mullvad-vpn &"
+              :tooltip {vpn-data.state == "connected" ? "VPN: ${vpn-data.server}" : "VPN: Disconnected"}
+        (image :path {vpn-data.state == "connected" ? "svg/network/lock.svg" : "svg/network/lock-open.svg"}
+               :image-width 16 :image-height 16))
+      (button :class "ctrl-btn net-btn"
+              :onclick "nm-connection-editor &"
+              :tooltip "${network-data.name} (${network-data.signal}%)"
+        (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
+          (image :path {network-data.icon} :image-width 16 :image-height 16)
+          (label :class "net-label" :text {network-data.name}))))
     ; Volume: icon + percentage
     (button :class "ctrl-btn vol-btn"
             :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"
