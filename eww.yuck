@@ -68,8 +68,8 @@
         (image :path {vpn-data.state == "connected" ? "svg/network/lock.svg" : "svg/network/lock-open.svg"}
                :image-width 16 :image-height 16))
       (button :class "ctrl-btn bluetooth-btn ${bluetooth-data.powered ? 'bt-on' : ''}"
-              :onclick "scripts/toggle-bluetooth.sh"
-              :onrightclick "pgrep -f overskride && pkill -f overskride || overskride &"
+              :onclick "python3 scripts/toggle-bluetooth.py"
+              :onrightclick "bash -c 'pgrep -x overskride && pkill -x overskride || overskride &'"
               :tooltip {bluetooth-data.connected ? "BT: ${bluetooth-data.device}"
                       : bluetooth-data.powered ? "Bluetooth: On"
                       : "Bluetooth: Off"}
