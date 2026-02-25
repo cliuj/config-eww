@@ -15,7 +15,7 @@
 (deflisten vpn-data :initial '{"state":"disconnected","server":""}'
   "scripts/mullvad-watcher.sh")
 (deflisten bluetooth-data :initial '{"powered":false,"connected":false,"device":"","icon":"svg/network/bluetooth-slash-svgrepo-com.svg"}'
-  "scripts/bluetooth-watcher.sh")
+  "python3 scripts/bluetooth-watcher.py")
 
 
 ; ── Workspace + Layout Widget ────────────────────────────
