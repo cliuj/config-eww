@@ -113,6 +113,14 @@ $bg-light:  #24283b;
   &.vpn-on { opacity: 1; }
 }
 
+.bluetooth-btn {
+  min-width: unset;
+  min-height: unset;
+  opacity: 0.4;
+
+  &.bt-on { opacity: 1; }
+}
+
 .vol-btn {
   padding: 0 8px 0 6px;
 }

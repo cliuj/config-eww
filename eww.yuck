@@ -14,6 +14,8 @@
   "scripts/network.sh")
 (deflisten vpn-data :initial '{"state":"disconnected","server":""}'
   "scripts/mullvad-watcher.sh")
+(deflisten bluetooth-data :initial '{"powered":false,"connected":false,"device":"","icon":"svg/network/bluetooth-slash-svgrepo-com.svg"}'
+  "scripts/bluetooth-watcher.sh")
 
 
 ; ── Workspace + Layout Widget ────────────────────────────
@@ -57,7 +59,7 @@
         (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
           (image :path "svg/sysinfo/ram-storage-svgrepo-com.svg" :image-width 16 :image-height 16)
           (label :class "sysinfo-label" :text "${sysinfo.ram_used}G"))))
-    ; VPN + Network grouped together
+    ; VPN + Bluetooth + Network grouped together
     (box :orientation "h" :spacing 0 :space-evenly false :valign "center"
       (button :class "ctrl-btn vpn-btn ${vpn-data.state == 'connected' ? 'vpn-on' : ''}"
               :onclick "mullvad-vpn &"
@@ -65,6 +67,13 @@
               :tooltip {vpn-data.state == "connected" ? "VPN: ${vpn-data.server}" : "VPN: Disconnected"}
         (image :path {vpn-data.state == "connected" ? "svg/network/lock.svg" : "svg/network/lock-open.svg"}
                :image-width 16 :image-height 16))
+      (button :class "ctrl-btn bluetooth-btn ${bluetooth-data.powered ? 'bt-on' : ''}"
+              :onclick "scripts/toggle-bluetooth.sh"
+              :onrightclick "pgrep -f overskride && pkill -f overskride || overskride &"
+              :tooltip {bluetooth-data.connected ? "BT: ${bluetooth-data.device}"
+                      : bluetooth-data.powered ? "Bluetooth: On"
+                      : "Bluetooth: Off"}
+        (image :path {bluetooth-data.icon} :image-width 16 :image-height 16))
       (button :class "ctrl-btn net-btn"
               :onclick "nm-connection-editor &"
               :onrightclick "pkill -f nm-connection-editor"
