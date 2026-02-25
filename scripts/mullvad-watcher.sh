@@ -18,7 +18,12 @@ output_status() {
 # Print initial status
 output_status
 
-# Listen for changes
+# Listen for changes, debounced to avoid rapid subprocess spawning
+last_update=0
 mullvad status listen 2>/dev/null | while read -r _line; do
-    output_status
+    now=$(date +%s)
+    if (( now - last_update >= 1 )); then
+        output_status
+        last_update=$now
+    fi
 done
