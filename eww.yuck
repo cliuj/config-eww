@@ -21,47 +21,47 @@
 
 ; ── Workspace + Layout Widget ────────────────────────────
 (defwidget workspaces-widget [wsdata]
-  (box :class "pill" :orientation "h" :spacing 4 :halign "start" :space-evenly false
+  (box :class "pill" :orientation "h" :halign "start" :space-evenly false
     (button :class "layout" :onclick "python3 scripts/cycle-layout.py next-layout" :tooltip {wsdata.layout}
       (image :path {wsdata.layout == "BSP" ? "svg/layouts/layout-svgrepo-com.svg"
                   : wsdata.layout == "Tall" ? "svg/layouts/layout-5-svgrepo-com.svg"
                   : wsdata.layout == "Mirror Tall" ? "svg/layouts/layout-4-svgrepo-com.svg"
                   : "svg/layouts/layout-7-svgrepo-com.svg"}
              :image-width 30 :image-height 30))
-    (box :class "workspaces" :orientation "h" :spacing 0
+    (box :class "workspaces" :orientation "h"
       (for ws in {wsdata.workspaces}
         (button :class "ws ${ws.state}"
                 :onclick "scripts/switch-workspace.sh ${ws.index}"
-          (box :orientation "v" :space-evenly false :valign "center"
+          (box :orientation "v" :valign "center" :space-evenly false
             (label :text {ws.label})
             (box :class "ws-dot ${ws.state == 'empty' ? '' : 'populated'}" :halign "center")))))))
 
 ; ── DateTime + Weather Widget ────────────────────────────
 (defwidget datetime-weather-widget [mon]
-  (box :class "pill" :orientation "h" :spacing 4 :space-evenly false :halign "center"
+  (box :class "pill" :orientation "h" :halign "center" :space-evenly false
     (button :class "datetime"
             :onclick "eww open --toggle calendar-${mon}"
       (label :text datetime))
-    (box :class "weather" :orientation "h" :spacing 6 :space-evenly false :valign "center"
+    (box :class "weather" :orientation "h" :valign "center" :space-evenly false
          :tooltip {weather-data.condition}
       (image :path {weather-data.icon} :image-width 16 :image-height 16)
       (label :class "weather-temp" :text {weather-data.temp}))))
 
 ; ── Controls Widget ──────────────────────────────────────
 (defwidget controls-widget [mon]
-  (box :class "pill" :orientation "h" :spacing 4 :halign "end" :space-evenly false :valign "center"
+  (box :class "pill" :orientation "h" :halign "end" :valign "center" :space-evenly false
     ; System info: CPU + RAM
     (button :class "ctrl-btn sysinfo-btn" :onclick "scripts/open-htop.sh"
             :onrightclick "pkill -f 'System.Monitor'"
-      (box :orientation "h" :spacing 12 :space-evenly false :valign "center"
-        (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
+      (box :orientation "h" :valign "center" :space-evenly false
+        (box :orientation "h" :valign "center" :space-evenly false
           (image :path "svg/sysinfo/cpu-svgrepo-com.svg" :image-width 16 :image-height 16)
           (label :class "sysinfo-label" :text "${sysinfo.cpu}%"))
-        (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
+        (box :orientation "h" :valign "center" :space-evenly false
           (image :path "svg/sysinfo/ram-storage-svgrepo-com.svg" :image-width 16 :image-height 16)
           (label :class "sysinfo-label" :text "${sysinfo.ram_used}G"))))
     ; Bluetooth + VPN + Network grouped together
-    (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
+    (box :orientation "h" :valign "center" :space-evenly false
       (button :class "ctrl-btn bluetooth-btn ${bluetooth-data.powered ? 'bt-on' : ''}"
               :onclick "python3 scripts/toggle-bluetooth.py"
               :onrightclick "bash -c 'pgrep -x overskride && pkill -x overskride || overskride &'"
@@ -81,7 +81,7 @@
                 :onclick "nm-connection-editor &"
                 :onrightclick "pkill -f nm-connection-editor"
                 :tooltip "${network-data.name} (${network-data.signal}%)"
-          (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
+          (box :orientation "h" :valign "center" :space-evenly false
             (image :path {network-data.icon} :image-width 16 :image-height 16)
             (revealer :reveal net-hover :transition "slideright" :duration "200ms"
               (label :class "net-label" :text {network-data.name}))))))
@@ -90,7 +90,7 @@
             :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"
             :onrightclick "scripts/toggle-mute.sh"
             :tooltip "${volume-data.muted ? 'Unmute' : 'Mute'}"
-      (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
+      (box :orientation "h" :valign "center" :space-evenly false
         (image :path {volume-data.muted ? "svg/volume/volume-xmark-svgrepo-com.svg" : "svg/volume/volume-max-svgrepo-com.svg"}
                :image-width 16 :image-height 16)
         (label :class "vol-label" :text "${volume-data.volume}%")))
@@ -103,7 +103,7 @@
 
 ; ── Power Menu Dropdown ─────────────────────────────────
 (defwidget power-menu-widget [mon]
-  (box :class "power-dropdown" :orientation "v" :spacing 4
+  (box :class "power-dropdown" :orientation "v"
     (button :class "power-item"
             :onclick "eww close power-menu-${mon}; scripts/power-action.sh suspend"
             :tooltip "Sleep"

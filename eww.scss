@@ -23,6 +23,11 @@ $transition-default: all 0.2s ease;
   background-color: $bg;
   border-radius: 12px;
   padding: 4px 8px;
+
+  // Replaces `spacing 4` on each pill's top-level box children.
+  // GTK spacing adds a gap between adjacent siblings; use margin-left
+  // on every child after the first to reproduce the same gap.
+  > * + * { margin-left: 4px; }
 }
 
 // Layout
@@ -32,6 +37,11 @@ $transition-default: all 0.2s ease;
 
 // Workspaces
 .workspaces {
+  // Replaces `spacing 0` on the workspaces box — ws buttons sit flush.
+  // The pill rule above would give the workspaces box itself a left margin
+  // (it is a sibling of .layout), but the ws buttons inside get no gap.
+  > * { margin-left: 0; }
+
   .ws {
     min-width: 32px;
     min-height: 32px;
@@ -71,7 +81,12 @@ $transition-default: all 0.2s ease;
 .weather {
   padding: 0 10px;
 
-  .weather-temp { font-size: 12px; font-weight: bold; }
+  // Replaces `spacing 6` between the weather icon and temp label.
+  .weather-temp {
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 6px;
+  }
 }
 
 // Shared control button style
@@ -90,6 +105,29 @@ $transition-default: all 0.2s ease;
 .sysinfo-btn {
   padding: 0 8px 0 8px;
 }
+
+// ── Controls pill internal spacing ───────────────────────────────────────────
+
+// Bluetooth/VPN/Network: these three ctrl-btns sit inside an anonymous box
+// with no class. Replaces the `spacing 2` that was on that group box.
+// Target consecutive ctrl-btn siblings (bt → vpn → eventbox wrapping net-btn).
+.bluetooth-btn + .vpn-btn { margin-left: 2px; }
+.vpn-btn + eventbox       { margin-left: 2px; }
+
+// Sysinfo button: two inner sibling boxes (CPU group + RAM group).
+// Replaces `spacing 12` between the CPU and RAM halves.
+// Structure: .sysinfo-btn > box > box[cpu] + box[ram]
+.sysinfo-btn box > box + box { margin-left: 12px; }
+
+// Sysinfo icon → label gap within each CPU/RAM group.
+// Replaces `spacing 4` inside each inner box (image + sysinfo-label).
+.sysinfo-btn .sysinfo-label { margin-left: 4px; }
+
+// Net button icon → revealed label gap. Replaces `spacing 4` inside net-btn box.
+.net-btn .net-label { margin-left: 4px; }
+
+// Volume button icon → percentage label gap. Replaces `spacing 4` inside vol-btn box.
+.vol-btn .vol-label { margin-left: 4px; }
 
 // Shared readout label style
 .net-label,
@@ -182,6 +220,9 @@ $transition-default: all 0.2s ease;
   background-color: $bg;
   border-radius: 12px;
   padding: 6px;
+
+  // Replaces `spacing 4` on the vertical power-dropdown box.
+  > * + * { margin-top: 4px; }
 
   .power-item {
     padding: 4px 6px;
