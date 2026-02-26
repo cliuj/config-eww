@@ -86,8 +86,9 @@ $transition-default: all 0.2s ease;
 
 // Shared padding for icon+label button groups
 .net-btn,
-.vol-btn {
-  padding: 0 8px 0 6px;
+.vol-btn,
+.sysinfo-btn {
+  padding: 0 8px 0 8px;
 }
 
 // Shared readout label style

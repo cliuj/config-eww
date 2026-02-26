@@ -50,7 +50,7 @@
 (defwidget controls-widget [mon]
   (box :class "pill" :orientation "h" :spacing 4 :halign "end" :space-evenly false :valign "center"
     ; System info: CPU + RAM
-    (button :class "ctrl-btn sysinfo" :onclick "scripts/open-htop.sh"
+    (button :class "ctrl-btn sysinfo-btn" :onclick "scripts/open-htop.sh"
             :onrightclick "pkill -f 'System.Monitor'"
       (box :orientation "h" :spacing 12 :space-evenly false :valign "center"
         (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
