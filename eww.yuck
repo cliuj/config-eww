@@ -83,9 +83,12 @@
                 :tooltip "${network-data.name} (${network-data.signal}%)"
           (box :orientation "h" :valign "center" :space-evenly false
             (image :path {network-data.icon} :image-width 16 :image-height 16)
-            (label :class "net-label ${net-hover ? 'net-label-in' : ''}"
-                   :text {network-data.name}
-                   :visible net-hover)))))
+            (revealer :class "net-reveal"
+                      :reveal net-hover
+                      :transition "slideright"
+                      :duration "200ms"
+                      :hexpand false :vexpand false
+              (label :class "net-label" :text {network-data.name}))))))
     ; Volume: icon + percentage
     (button :class "ctrl-btn vol-btn"
             :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"

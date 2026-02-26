@@ -127,20 +127,13 @@ $transition-default: all 0.2s ease;
 // Replaces `spacing 4` inside each inner box (image + sysinfo-label).
 .sysinfo-btn .sysinfo-label { margin-left: 4px; }
 
-// Net button icon → revealed label gap only when label is shown.
-.net-label-in { margin-left: 4px; }
-.net-label-in {
-  animation: net-label-in 200ms ease;
-}
-@keyframes net-label-in {
-  from {
-    opacity: 0;
-    margin-left: 0;
-  }
-  to {
-    opacity: 1;
-    margin-left: 4px;
-  }
+// Net button icon → revealed label gap.
+.net-btn .net-label { margin-left: 4px; }
+// Try revealer again with minimal layout impact.
+.net-reveal {
+  min-width: 0;
+  padding: 0;
+  margin: 0;
 }
 
 // Volume button icon → percentage label gap. Replaces `spacing 4` inside vol-btn box.
