@@ -20,7 +20,7 @@ $bg-light:  #24283b;
 .pill {
   background-color: $bg;
   border-radius: 12px;
-  padding: 4px 4px;
+  padding: 4px 8px;
 }
 
 // Layout
@@ -106,16 +106,16 @@ $bg-light:  #24283b;
 }
 
 .vpn-btn {
-  min-width: unset;
-  min-height: unset;
+  min-width: 32px;
+  min-height: 32px;
   opacity: 0.4;
 
   &.vpn-on { opacity: 1; }
 }
 
 .bluetooth-btn {
-  min-width: unset;
-  min-height: unset;
+  min-width: 32px;
+  min-height: 32px;
   opacity: 0.4;
 
   &.bt-on { opacity: 1; }
@@ -132,7 +132,7 @@ $bg-light:  #24283b;
 
 // System info
 .sysinfo {
-  padding: 0 4px;
+  padding: 0;
 
   .sysinfo-label {
     font-size: 12px;

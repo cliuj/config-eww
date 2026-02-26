@@ -48,7 +48,7 @@
 
 ; ── Controls Widget ──────────────────────────────────────
 (defwidget controls-widget [mon]
-  (box :class "pill" :orientation "h" :spacing 12 :halign "end" :space-evenly false :valign "center"
+  (box :class "pill" :orientation "h" :spacing 4 :halign "end" :space-evenly false :valign "center"
     ; System info: CPU + RAM
     (button :class "ctrl-btn sysinfo" :onclick "scripts/open-htop.sh"
             :onrightclick "pkill -f 'System.Monitor'"
@@ -59,14 +59,8 @@
         (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
           (image :path "svg/sysinfo/ram-storage-svgrepo-com.svg" :image-width 16 :image-height 16)
           (label :class "sysinfo-label" :text "${sysinfo.ram_used}G"))))
-    ; VPN + Bluetooth + Network grouped together
-    (box :orientation "h" :spacing 0 :space-evenly false :valign "center"
-      (button :class "ctrl-btn vpn-btn ${vpn-data.state == 'connected' ? 'vpn-on' : ''}"
-              :onclick "mullvad-vpn &"
-              :onrightclick "pkill -f mullvad-gui"
-              :tooltip {vpn-data.state == "connected" ? "VPN: ${vpn-data.server}" : "VPN: Disconnected"}
-        (image :path {vpn-data.state == "connected" ? "svg/network/lock.svg" : "svg/network/lock-open.svg"}
-               :image-width 16 :image-height 16))
+    ; Bluetooth + VPN + Network grouped together
+    (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
       (button :class "ctrl-btn bluetooth-btn ${bluetooth-data.powered ? 'bt-on' : ''}"
               :onclick "python3 scripts/toggle-bluetooth.py"
               :onrightclick "bash -c 'pgrep -x overskride && pkill -x overskride || overskride &'"
@@ -74,6 +68,12 @@
                       : bluetooth-data.powered ? "Bluetooth: On"
                       : "Bluetooth: Off"}
         (image :path {bluetooth-data.icon} :image-width 16 :image-height 16))
+      (button :class "ctrl-btn vpn-btn ${vpn-data.state == 'connected' ? 'vpn-on' : ''}"
+              :onclick "mullvad-vpn &"
+              :onrightclick "pkill -f mullvad-gui"
+              :tooltip {vpn-data.state == "connected" ? "VPN: ${vpn-data.server}" : "VPN: Disconnected"}
+        (image :path {vpn-data.state == "connected" ? "svg/network/lock.svg" : "svg/network/lock-open.svg"}
+               :image-width 16 :image-height 16))
       (button :class "ctrl-btn net-btn"
               :onclick "nm-connection-editor &"
               :onrightclick "pkill -f nm-connection-editor"
