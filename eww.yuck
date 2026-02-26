@@ -77,14 +77,15 @@
                :image-width 16 :image-height 16))
       (eventbox :onhover "eww update net-hover=true"
                 :onhoverlost "eww update net-hover=false"
-        (button :class "ctrl-btn net-btn"
+        (button :class "ctrl-btn net-btn ${net-hover ? 'net-open' : ''}"
                 :onclick "nm-connection-editor &"
                 :onrightclick "pkill -f nm-connection-editor"
                 :tooltip "${network-data.name} (${network-data.signal}%)"
           (box :orientation "h" :valign "center" :space-evenly false
             (image :path {network-data.icon} :image-width 16 :image-height 16)
-            (revealer :reveal net-hover :transition "slideright" :duration "200ms"
-              (label :class "net-label" :text {network-data.name}))))))
+            (label :class "net-label ${net-hover ? 'net-label-in' : ''}"
+                   :text {network-data.name}
+                   :visible net-hover)))))
     ; Volume: icon + percentage
     (button :class "ctrl-btn vol-btn"
             :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"
@@ -188,4 +189,3 @@
   :windowtype "toolbar"
   :wm-ignore true
   (calendar-widget))
-

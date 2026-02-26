@@ -105,6 +105,10 @@ $transition-default: all 0.2s ease;
 .sysinfo-btn {
   padding: 0 8px 0 8px;
 }
+// Net button shouldn't reserve fixed width so the label can fully collapse.
+.net-btn { min-width: 0; }
+// Restore net button horizontal padding now that min-width is removed.
+.net-btn { padding: 0 8px; }
 
 // ── Controls pill internal spacing ───────────────────────────────────────────
 
@@ -123,8 +127,21 @@ $transition-default: all 0.2s ease;
 // Replaces `spacing 4` inside each inner box (image + sysinfo-label).
 .sysinfo-btn .sysinfo-label { margin-left: 4px; }
 
-// Net button icon → revealed label gap. Replaces `spacing 4` inside net-btn box.
-.net-btn .net-label { margin-left: 4px; }
+// Net button icon → revealed label gap only when label is shown.
+.net-label-in { margin-left: 4px; }
+.net-label-in {
+  animation: net-label-in 200ms ease;
+}
+@keyframes net-label-in {
+  from {
+    opacity: 0;
+    margin-left: 0;
+  }
+  to {
+    opacity: 1;
+    margin-left: 4px;
+  }
+}
 
 // Volume button icon → percentage label gap. Replaces `spacing 4` inside vol-btn box.
 .vol-btn .vol-label { margin-left: 4px; }
