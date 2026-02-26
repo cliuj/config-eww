@@ -10,7 +10,7 @@
   "python3 scripts/sysinfo.py")
 (defpoll weather-data :interval "600s" :initial '{"icon":"svg/weather/weather-few-clouds-svgrepo-com.svg","temp":"--","condition":"Unknown"}'
   "python3 scripts/weather.py")
-(defpoll network-data :interval "5s" :initial '{"type":"none","state":"disconnected","name":"...","signal":0,"icon":"svg/network/wifi-off.svg"}'
+(defpoll network-data :interval "5s" :initial '{"type":"none","state":"disconnected","name":"...","signal":0,"icon":"svg/network/wifi-slash-svgrepo-com.svg"}'
   "scripts/network.sh")
 (deflisten vpn-data :initial '{"state":"disconnected","server":""}'
   "scripts/mullvad-watcher.sh")
@@ -52,7 +52,7 @@
     ; System info: CPU + RAM
     (button :class "ctrl-btn sysinfo" :onclick "scripts/open-htop.sh"
             :onrightclick "pkill -f 'System.Monitor'"
-      (box :orientation "h" :spacing 8 :space-evenly false :valign "center"
+      (box :orientation "h" :spacing 12 :space-evenly false :valign "center"
         (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
           (image :path "svg/sysinfo/cpu-svgrepo-com.svg" :image-width 16 :image-height 16)
           (label :class "sysinfo-label" :text "${sysinfo.cpu}%"))
@@ -72,7 +72,7 @@
               :onclick "mullvad-vpn &"
               :onrightclick "pkill -f mullvad-gui"
               :tooltip {vpn-data.state == "connected" ? "VPN: ${vpn-data.server}" : "VPN: Disconnected"}
-        (image :path {vpn-data.state == "connected" ? "svg/network/lock.svg" : "svg/network/lock-open.svg"}
+        (image :path {vpn-data.state == "connected" ? "svg/network/lock-alt-svgrepo-com.svg" : "svg/network/lock-slash-svgrepo-com.svg"}
                :image-width 16 :image-height 16))
       (button :class "ctrl-btn net-btn"
               :onclick "nm-connection-editor &"
