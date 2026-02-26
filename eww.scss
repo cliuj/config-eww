@@ -3,6 +3,8 @@ $fg:        #c0caf5;
 $accent:    #7aa2f7;
 $muted:     #414868;
 $bg-light:  #24283b;
+$danger:    #f7768e;
+$transition-default: all 0.2s ease;
 
 * {
   all: unset;
@@ -31,24 +33,21 @@ $bg-light:  #24283b;
 // Workspaces
 .workspaces {
   .ws {
-    font-size: 13px;
     min-width: 32px;
     min-height: 32px;
     border-radius: 999px;
-    color: $fg;
-    transition: all 0.2s ease;
+    transition: $transition-default;
 
     // States come from xmonad via _XMONAD_LOG_N xprop:
     //   current  — focused workspace
     //   visible  — shown on another monitor but not focused
     //   hidden   — has windows but not on screen
     //   empty    — no windows at all
-    &.current { color: $fg; background-color: darken($accent, 15%); }
-    &.hidden { color: $fg; }
-    &.visible { color: $fg; background-color: $bg-light; }
+    &.current { background-color: darken($accent, 15%); }
+    &.visible { background-color: $bg-light; }
     &.empty { color: $muted; opacity: 0.5; }
-    &.urgent { color: #f7768e; }
-    &:hover { color: $fg; background-color: $bg-light; }
+    &.urgent { color: $danger; }
+    &:hover { background-color: $bg-light; }
 
     .ws-dot {
       min-width: 4px;
@@ -64,7 +63,6 @@ $bg-light:  #24283b;
 // DateTime
 .datetime {
   padding: 0 10px;
-  color: $fg;
   font-weight: bold;
 }
 
@@ -81,64 +79,46 @@ $bg-light:  #24283b;
   min-width: 32px;
   min-height: 32px;
   border-radius: 999px;
-  transition: all 0.2s ease;
+  transition: $transition-default;
 
   &:hover { background-color: $bg-light; }
 }
 
-// Power icon — standalone circle
-.power-circle {
-  min-width: 32px;
-  min-height: 32px;
-  border-radius: 999px;
-  transition: all 0.2s ease;
-
-  &:hover { background-color: $bg-light; }
-}
-
-.net-btn {
-  padding: 0 8px 0 6px;
-}
-
-.net-label {
-  font-size: 12px;
-  font-weight: bold;
-}
-
-.vpn-btn {
-  min-width: 32px;
-  min-height: 32px;
-  opacity: 0.4;
-
-  &.vpn-on { opacity: 1; }
-}
-
-.bluetooth-btn {
-  min-width: 32px;
-  min-height: 32px;
-  opacity: 0.4;
-
-  &.bt-on { opacity: 1; }
-}
-
+// Shared padding for icon+label button groups
+.net-btn,
 .vol-btn {
   padding: 0 8px 0 6px;
 }
 
+// Shared readout label style
+.net-label,
 .vol-label {
   font-size: 12px;
   font-weight: bold;
 }
 
-// System info
-.sysinfo {
-  padding: 0;
+// Toggle button base
+%toggle-btn-base {
+  min-width: 32px;
+  min-height: 32px;
+  opacity: 0.4;
+}
 
-  .sysinfo-label {
-    font-size: 12px;
-    font-weight: bold;
-    color: $muted;
-  }
+.vpn-btn {
+  @extend %toggle-btn-base;
+  &.vpn-on { opacity: 1; }
+}
+
+.bluetooth-btn {
+  @extend %toggle-btn-base;
+  &.bt-on { opacity: 1; }
+}
+
+// System info
+.sysinfo-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: $muted;
 }
 
 // Volume dropdown (separate window)
@@ -176,14 +156,9 @@ $bg-light:  #24283b;
   padding: 20px;
 
   .cal {
-    color: $fg;
     font-size: 16px;
 
-    &.header {
-      color: $accent;
-      font-weight: bold;
-    }
-
+    &.header,
     &.highlight {
       color: $accent;
       font-weight: bold;
@@ -211,10 +186,9 @@ $bg-light:  #24283b;
     padding: 4px 6px;
     border-radius: 8px;
     font-size: 13px;
-    color: $fg;
-    transition: all 0.2s ease;
+    transition: $transition-default;
 
     &:hover { background-color: $bg-light; }
-    &.poweroff:hover { color: #f7768e; background-color: rgba(247, 118, 142, 0.15); }
+    &.poweroff:hover { color: $danger; background-color: rgba($danger, 0.15); }
   }
 }

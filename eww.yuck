@@ -91,7 +91,7 @@
                :image-width 16 :image-height 16)
         (label :class "vol-label" :text "${volume-data.volume}%")))
     ; Power icon
-    (button :class "ctrl-btn power-circle"
+    (button :class "ctrl-btn"
             :onclick "eww close volume-ctl-${mon} 2>/dev/null; eww open --toggle power-menu-${mon}"
             :tooltip "Power"
       (image :path "svg/powermenu/power-off-svgrepo-com.svg"
