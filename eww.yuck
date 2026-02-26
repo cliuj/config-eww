@@ -12,6 +12,7 @@
   "python3 scripts/weather.py")
 (defpoll network-data :interval "5s" :initial '{"type":"none","state":"disconnected","name":"...","signal":0,"icon":"svg/network/wifi-slash-svgrepo-com.svg"}'
   "scripts/network.sh")
+(defvar net-hover false)
 (deflisten vpn-data :initial '{"state":"disconnected","server":""}'
   "scripts/mullvad-watcher.sh")
 (deflisten bluetooth-data :initial '{"powered":false,"connected":false,"device":"","icon":"svg/network/bluetooth-slash-svgrepo-com.svg"}'
@@ -74,13 +75,16 @@
               :tooltip {vpn-data.state == "connected" ? "VPN: ${vpn-data.server}" : "VPN: Disconnected"}
         (image :path {vpn-data.state == "connected" ? "svg/network/lock-alt-svgrepo-com.svg" : "svg/network/lock-slash-svgrepo-com.svg"}
                :image-width 16 :image-height 16))
-      (button :class "ctrl-btn net-btn"
-              :onclick "nm-connection-editor &"
-              :onrightclick "pkill -f nm-connection-editor"
-              :tooltip "${network-data.name} (${network-data.signal}%)"
-        (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
-          (image :path {network-data.icon} :image-width 16 :image-height 16)
-          (label :class "net-label" :text {network-data.name}))))
+      (eventbox :onhover "eww update net-hover=true"
+                :onhoverlost "eww update net-hover=false"
+        (button :class "ctrl-btn net-btn"
+                :onclick "nm-connection-editor &"
+                :onrightclick "pkill -f nm-connection-editor"
+                :tooltip "${network-data.name} (${network-data.signal}%)"
+          (box :orientation "h" :spacing 4 :space-evenly false :valign "center"
+            (image :path {network-data.icon} :image-width 16 :image-height 16)
+            (revealer :reveal net-hover :transition "slideright" :duration "200ms"
+              (label :class "net-label" :text {network-data.name}))))))
     ; Volume: icon + percentage
     (button :class "ctrl-btn vol-btn"
             :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"
