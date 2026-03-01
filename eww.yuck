@@ -13,6 +13,7 @@
 (defpoll network-data :interval "5s" :initial '{"type":"none","state":"disconnected","name":"...","signal":0,"icon":"svg/network/wifi-slash-svgrepo-com.svg"}'
   "scripts/network.sh")
 (defvar net-hover false)
+(defvar tooltip-id "")
 (deflisten vpn-data :initial '{"state":"disconnected","server":""}'
   "scripts/mullvad-watcher.sh")
 (deflisten bluetooth-data :initial '{"powered":false,"connected":false,"device":"","count":0,"icon":"svg/network/bluetooth-slash-svgrepo-com.svg"}'
@@ -22,12 +23,14 @@
 ; ── Workspace + Layout Widget ────────────────────────────
 (defwidget workspaces-widget [wsdata]
   (box :class "pill" :orientation "h" :halign "start" :space-evenly false
-    (button :class "layout" :onclick "python3 scripts/cycle-layout.py next-layout" :tooltip {wsdata.layout}
-      (image :path {wsdata.layout == "BSP" ? "svg/layouts/layout-svgrepo-com.svg"
-                  : wsdata.layout == "Tall" ? "svg/layouts/layout-5-svgrepo-com.svg"
-                  : wsdata.layout == "Mirror Tall" ? "svg/layouts/layout-4-svgrepo-com.svg"
-                  : "svg/layouts/layout-7-svgrepo-com.svg"}
-             :image-width 30 :image-height 30))
+    (eventbox :onhover "eww update tooltip-id=layout; eww open tooltip-left-0"
+              :onhoverlost "eww close tooltip-left-0"
+      (button :class "layout" :onclick "python3 scripts/cycle-layout.py next-layout"
+        (image :path {wsdata.layout == "BSP" ? "svg/layouts/layout-svgrepo-com.svg"
+                    : wsdata.layout == "Tall" ? "svg/layouts/layout-5-svgrepo-com.svg"
+                    : wsdata.layout == "Mirror Tall" ? "svg/layouts/layout-4-svgrepo-com.svg"
+                    : "svg/layouts/layout-7-svgrepo-com.svg"}
+               :image-width 30 :image-height 30)))
     (box :class "workspaces" :orientation "h"
       (for ws in {wsdata.workspaces}
         (button :class "ws ${ws.state}"
@@ -42,10 +45,11 @@
     (button :class "datetime"
             :onclick "eww open --toggle calendar-${mon}"
       (label :text datetime))
-    (box :class "weather" :orientation "h" :valign "center" :space-evenly false
-         :tooltip {weather-data.condition}
-      (image :path {weather-data.icon} :image-width 16 :image-height 16)
-      (label :class "weather-temp" :text {weather-data.temp}))))
+    (eventbox :onhover "eww update tooltip-id=weather; eww open tooltip-center-0"
+              :onhoverlost "eww close tooltip-center-0"
+      (box :class "weather" :orientation "h" :valign "center" :space-evenly false
+        (image :path {weather-data.icon} :image-width 16 :image-height 16)
+        (label :class "weather-temp" :text {weather-data.temp})))))
 
 ; ── Controls Widget ──────────────────────────────────────
 (defwidget controls-widget [mon]
@@ -62,27 +66,26 @@
           (label :class "sysinfo-label" :text "${sysinfo.ram_used}G"))))
     ; Bluetooth + VPN + Network grouped together
     (box :orientation "h" :valign "center" :space-evenly false
-      (button :class "ctrl-btn bluetooth-btn ${bluetooth-data.powered ? 'bt-on' : ''} ${bluetooth-data.count > 0 ? 'bt-connected' : ''}"
-              :onclick "python3 scripts/toggle-bluetooth.py"
-              :onrightclick "bash -c 'pgrep -x overskride && pkill -x overskride || overskride &'"
-              :tooltip {bluetooth-data.connected ? "BT: ${bluetooth-data.device}"
-                      : bluetooth-data.powered ? "Bluetooth: On"
-                      : "Bluetooth: Off"}
-        (box :orientation "h" :space-evenly false :valign "center"
-          (image :path {bluetooth-data.icon} :image-width 16 :image-height 16)
-          (label :class "bt-count" :visible {bluetooth-data.count > 0} :text {bluetooth-data.count})))
-      (button :class "ctrl-btn vpn-btn ${vpn-data.state == 'connected' ? 'vpn-on' : ''}"
-              :onclick "mullvad-vpn &"
-              :onrightclick "pkill -f mullvad-gui"
-              :tooltip {vpn-data.state == "connected" ? "VPN: ${vpn-data.server}" : "VPN: Disconnected"}
-        (image :path {vpn-data.state == "connected" ? "svg/network/lock-alt-svgrepo-com.svg" : "svg/network/lock-slash-svgrepo-com.svg"}
-               :image-width 16 :image-height 16))
-      (eventbox :onhover "eww update net-hover=true"
-                :onhoverlost "eww update net-hover=false"
+      (eventbox :onhover "eww update tooltip-id=bt; eww open tooltip-right-0"
+                :onhoverlost "eww close tooltip-right-0"
+        (button :class "ctrl-btn bluetooth-btn ${bluetooth-data.powered ? 'bt-on' : ''} ${bluetooth-data.count > 0 ? 'bt-connected' : ''}"
+                :onclick "python3 scripts/toggle-bluetooth.py"
+                :onrightclick "bash -c 'pgrep -x overskride && pkill -x overskride || overskride &'"
+          (box :orientation "h" :space-evenly false :valign "center"
+            (image :path {bluetooth-data.icon} :image-width 16 :image-height 16)
+            (label :class "bt-count" :visible {bluetooth-data.count > 0} :text {bluetooth-data.count}))))
+      (eventbox :onhover "eww update tooltip-id=vpn; eww open tooltip-right-0"
+                :onhoverlost "eww close tooltip-right-0"
+        (button :class "ctrl-btn vpn-btn ${vpn-data.state == 'connected' ? 'vpn-on' : ''}"
+                :onclick "mullvad-vpn &"
+                :onrightclick "pkill -f mullvad-gui"
+          (image :path {vpn-data.state == "connected" ? "svg/network/lock-alt-svgrepo-com.svg" : "svg/network/lock-slash-svgrepo-com.svg"}
+                 :image-width 16 :image-height 16)))
+      (eventbox :onhover "eww update net-hover=true tooltip-id=net; eww open tooltip-right-0"
+                :onhoverlost "eww update net-hover=false; eww close tooltip-right-0"
         (button :class "ctrl-btn net-btn ${net-hover ? 'net-open' : ''}"
                 :onclick "nm-connection-editor &"
                 :onrightclick "pkill -f nm-connection-editor"
-                :tooltip "${network-data.name} (${network-data.signal}%)"
           (box :orientation "h" :valign "center" :space-evenly false
             (image :path {network-data.icon} :image-width 16 :image-height 16)
             (revealer :class "net-reveal"
@@ -92,37 +95,36 @@
                       :hexpand false :vexpand false
               (label :class "net-label" :text {network-data.name}))))))
     ; Volume: icon + percentage
-    (button :class "ctrl-btn vol-btn"
-            :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"
-            :onrightclick "scripts/toggle-mute.sh"
-            :tooltip "${volume-data.muted ? 'Unmute' : 'Mute'}"
-      (box :orientation "h" :valign "center" :space-evenly false
-        (image :path {volume-data.muted ? "svg/volume/volume-xmark-svgrepo-com.svg" : "svg/volume/volume-max-svgrepo-com.svg"}
-               :image-width 16 :image-height 16)
-        (label :class "vol-label" :text "${volume-data.volume}%")))
+    (eventbox :onhover "eww update tooltip-id=vol; eww open tooltip-right-0"
+              :onhoverlost "eww close tooltip-right-0"
+      (button :class "ctrl-btn vol-btn"
+              :onclick "eww close power-menu-${mon} 2>/dev/null; eww open --toggle volume-ctl-${mon}"
+              :onrightclick "scripts/toggle-mute.sh"
+        (box :orientation "h" :valign "center" :space-evenly false
+          (image :path {volume-data.muted ? "svg/volume/volume-xmark-svgrepo-com.svg" : "svg/volume/volume-max-svgrepo-com.svg"}
+                 :image-width 16 :image-height 16)
+          (label :class "vol-label" :text "${volume-data.volume}%"))))
     ; Power icon
-    (button :class "ctrl-btn"
-            :onclick "eww close volume-ctl-${mon} 2>/dev/null; eww open --toggle power-menu-${mon}"
-            :tooltip "Power"
-      (image :path "svg/powermenu/power-off-svgrepo-com.svg"
-             :image-width 16 :image-height 16))))
+    (eventbox :onhover "eww update tooltip-id=power; eww open tooltip-right-0"
+              :onhoverlost "eww close tooltip-right-0"
+      (button :class "ctrl-btn"
+              :onclick "eww close volume-ctl-${mon} 2>/dev/null; eww open --toggle power-menu-${mon}"
+        (image :path "svg/powermenu/power-off-svgrepo-com.svg"
+               :image-width 16 :image-height 16)))))
 
 ; ── Power Menu Dropdown ─────────────────────────────────
 (defwidget power-menu-widget [mon]
   (box :class "power-dropdown" :orientation "v"
     (button :class "power-item"
             :onclick "eww close power-menu-${mon}; scripts/power-action.sh suspend"
-            :tooltip "Sleep"
       (image :path "svg/powermenu/sleep-moon-svgrepo-com.svg"
              :image-width 16 :image-height 16))
     (button :class "power-item"
             :onclick "eww close power-menu-${mon}; scripts/power-action.sh reboot"
-            :tooltip "Restart"
       (image :path "svg/powermenu/restart-svgrepo-com.svg"
              :image-width 16 :image-height 16))
     (button :class "power-item poweroff"
             :onclick "eww close power-menu-${mon}; scripts/power-action.sh poweroff"
-            :tooltip "Power Off"
       (image :path "svg/powermenu/power-off-svgrepo-com.svg"
              :image-width 16 :image-height 16))))
 
@@ -194,3 +196,35 @@
   :windowtype "toolbar"
   :wm-ignore true
   (calendar-widget))
+
+; ── Shared Tooltip ────────────────────────────────────
+(defwidget tooltip-popup []
+  (box :class "tooltip-popup" :halign "center"
+    (label :text {tooltip-id == "layout" ? bar-0.layout
+                : tooltip-id == "weather" ? weather-data.condition
+                : tooltip-id == "bt" ? (bluetooth-data.connected ? "BT: ${bluetooth-data.device}"
+                                      : bluetooth-data.powered ? "Bluetooth: On"
+                                      : "Bluetooth: Off")
+                : tooltip-id == "vpn" ? (vpn-data.state == "connected" ? "VPN: ${vpn-data.server}" : "VPN: Disconnected")
+                : tooltip-id == "net" ? "${network-data.name} (${network-data.signal}%)"
+                : tooltip-id == "vol" ? (volume-data.muted ? "Unmute" : "Mute")
+                : tooltip-id == "power" ? "Power"
+                : ""})))
+
+(defwindow tooltip-left-0
+  :monitor 0
+  :geometry (geometry :x "30px" :y "52px" :width "200px" :height "30px" :anchor "top left")
+  :stacking "overlay" :windowtype "toolbar" :wm-ignore true
+  (tooltip-popup))
+
+(defwindow tooltip-center-0
+  :monitor 0
+  :geometry (geometry :x "0px" :y "52px" :width "200px" :height "30px" :anchor "top center")
+  :stacking "overlay" :windowtype "toolbar" :wm-ignore true
+  (tooltip-popup))
+
+(defwindow tooltip-right-0
+  :monitor 0
+  :geometry (geometry :x "-160px" :y "52px" :width "200px" :height "30px" :anchor "top right")
+  :stacking "overlay" :windowtype "toolbar" :wm-ignore true
+  (tooltip-popup))

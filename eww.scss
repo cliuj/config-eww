@@ -13,6 +13,17 @@ $transition-default: all 0.2s ease;
   color: $fg;
 }
 
+.tooltip-popup {
+  background-color: $bg;
+  border-radius: 8px;
+  padding: 4px 8px;
+  border: 1px solid $muted;
+
+  label {
+    font-size: 12px;
+  }
+}
+
 // Outer container — transparent, holds the three groups
 .top-bar-outer {
   background-color: transparent;
@@ -112,11 +123,10 @@ $transition-default: all 0.2s ease;
 
 // ── Controls pill internal spacing ───────────────────────────────────────────
 
-// Bluetooth/VPN/Network: these three ctrl-btns sit inside an anonymous box
-// with no class. Replaces the `spacing 2` that was on that group box.
-// Target consecutive ctrl-btn siblings (bt → vpn → eventbox wrapping net-btn).
-.bluetooth-btn + .vpn-btn { margin-left: 2px; }
-.vpn-btn + eventbox       { margin-left: 2px; }
+// Bluetooth/VPN/Network: all three are wrapped in eventboxes inside an anonymous box.
+// Replaces `spacing 2` that was on that group box.
+// Structure: box > eventbox[bt] + eventbox[vpn] + eventbox[net]
+.pill > box > eventbox + eventbox { margin-left: 2px; }
 
 // Sysinfo button: two inner sibling boxes (CPU group + RAM group).
 // Replaces `spacing 12` between the CPU and RAM halves.
