@@ -18,6 +18,8 @@
   "scripts/mullvad-watcher.sh")
 (deflisten bluetooth-data :initial '{"powered":false,"connected":false,"device":"","count":0,"icon":"svg/network/bluetooth-slash-svgrepo-com.svg"}'
   "python3 scripts/bluetooth-watcher.py")
+(deflisten music-data :initial '{"artist":"","title":"","status":"Stopped"}'
+  `playerctl metadata --player=YoutubeMusic --format '{"artist":"{{artist}}","title":"{{title}}","status":"{{status}}"}' --follow`)
 
 
 ; ── Workspace + Layout Widget ────────────────────────────
@@ -147,6 +149,25 @@
            :value {volume-data.volume}
            :onchange "scripts/set-volume.sh {}")))
 
+; ── Music Widget ────────────────────────────────────────
+(defwidget music-widget []
+  (box :class "pill music-pill"
+       :orientation "h"
+       :halign "end"
+       :valign "center"
+       :space-evenly false
+       :visible {music-data.status == "Playing" || music-data.status == "Paused"}
+    (button :class "ctrl-btn music-btn" :onclick "playerctl --player=YoutubeMusic play-pause"
+      (box :orientation "h" :valign "center" :space-evenly false
+        (image :path "svg/music/music-note-svgrepo-com.svg" :image-width 16 :image-height 16)
+        (label :class "music-label" :limit-width 35 :text {music-data.status == "Paused" ? "Paused" : "${music-data.artist} — ${music-data.title}"})))))
+
+; ── Right Section (music + controls) ──────────────────────
+(defwidget right-section [mon]
+  (box :class "right-section" :orientation "h" :halign "end" :space-evenly false
+    (music-widget)
+    (controls-widget :mon mon)))
+
 ; ── Top Bar Layout ────────────────────────────────────────
 (defwidget top-bar-layout [bardata mon]
   (box :class "top-bar-outer"
@@ -154,7 +175,7 @@
     (centerbox :orientation "h"
       (workspaces-widget :wsdata bardata)
       (datetime-weather-widget :mon mon)
-      (controls-widget :mon mon))))
+      (right-section :mon mon))))
 
 ; ── Windows ───────────────────────────────────────────────
 ; Monitor 0 (DisplayPort-0, 2560x1440)

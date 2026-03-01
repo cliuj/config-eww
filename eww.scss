@@ -100,6 +100,21 @@ $transition-default: all 0.2s ease;
   }
 }
 
+// Right section: gap between music pill and controls pill
+.right-section > .pill + .pill { margin-left: 20px; }
+
+// Music pill: fixed width so it doesn't resize on song/pause changes
+.music-pill { min-width: 280px; }
+
+// Music button: same pattern as vol-btn / sysinfo-btn
+.music-btn { padding: 0 8px; }
+.music-btn .music-label { margin-left: 4px; }
+
+.music-label {
+  font-size: 12px;
+  font-weight: bold;
+}
+
 // Shared control button style
 .ctrl-btn {
   min-width: 32px;
