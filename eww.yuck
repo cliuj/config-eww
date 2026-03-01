@@ -15,7 +15,7 @@
 (defvar net-hover false)
 (deflisten vpn-data :initial '{"state":"disconnected","server":""}'
   "scripts/mullvad-watcher.sh")
-(deflisten bluetooth-data :initial '{"powered":false,"connected":false,"device":"","icon":"svg/network/bluetooth-slash-svgrepo-com.svg"}'
+(deflisten bluetooth-data :initial '{"powered":false,"connected":false,"device":"","count":0,"icon":"svg/network/bluetooth-slash-svgrepo-com.svg"}'
   "python3 scripts/bluetooth-watcher.py")
 
 
@@ -62,13 +62,15 @@
           (label :class "sysinfo-label" :text "${sysinfo.ram_used}G"))))
     ; Bluetooth + VPN + Network grouped together
     (box :orientation "h" :valign "center" :space-evenly false
-      (button :class "ctrl-btn bluetooth-btn ${bluetooth-data.powered ? 'bt-on' : ''}"
+      (button :class "ctrl-btn bluetooth-btn ${bluetooth-data.powered ? 'bt-on' : ''} ${bluetooth-data.count > 0 ? 'bt-connected' : ''}"
               :onclick "python3 scripts/toggle-bluetooth.py"
               :onrightclick "bash -c 'pgrep -x overskride && pkill -x overskride || overskride &'"
               :tooltip {bluetooth-data.connected ? "BT: ${bluetooth-data.device}"
                       : bluetooth-data.powered ? "Bluetooth: On"
                       : "Bluetooth: Off"}
-        (image :path {bluetooth-data.icon} :image-width 16 :image-height 16))
+        (box :orientation "h" :space-evenly false :valign "center"
+          (image :path {bluetooth-data.icon} :image-width 16 :image-height 16)
+          (label :class "bt-count" :visible {bluetooth-data.count > 0} :text {bluetooth-data.count})))
       (button :class "ctrl-btn vpn-btn ${vpn-data.state == 'connected' ? 'vpn-on' : ''}"
               :onclick "mullvad-vpn &"
               :onrightclick "pkill -f mullvad-gui"

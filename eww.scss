@@ -161,6 +161,13 @@ $transition-default: all 0.2s ease;
 .bluetooth-btn {
   @extend %toggle-btn-base;
   &.bt-on { opacity: 1; }
+  &.bt-on.bt-connected { padding: 0 4px 0 8px; }
+}
+
+.bt-count {
+  font-size: 12px;
+  font-weight: bold;
+  margin-left: 4px;
 }
 
 // System info

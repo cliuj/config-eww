@@ -27,12 +27,13 @@ def get_status(bus):
         )
         powered = bool(adapter.Get(ADAPTER_IFACE, "Powered"))
     except dbus.exceptions.DBusException:
-        return {"powered": False, "connected": False, "device": "", "icon": ICON_OFF}
+        return {"powered": False, "connected": False, "device": "", "count": 0, "icon": ICON_OFF}
 
     if not powered:
-        return {"powered": False, "connected": False, "device": "", "icon": ICON_OFF}
+        return {"powered": False, "connected": False, "device": "", "count": 0, "icon": ICON_OFF}
 
     # Find connected devices via ObjectManager
+    connected_devices = []
     try:
         manager = dbus.Interface(
             bus.get_object(BLUEZ_SERVICE, "/"), OBJ_MANAGER_IFACE
@@ -43,16 +44,20 @@ def get_status(bus):
                 dev = ifaces[DEVICE_IFACE]
                 if dev.get("Connected", False):
                     name = str(dev.get("Alias", dev.get("Name", "Unknown")))
-                    return {
-                        "powered": True,
-                        "connected": True,
-                        "device": name,
-                        "icon": ICON_CONNECTED,
-                    }
+                    connected_devices.append(name)
     except dbus.exceptions.DBusException:
         pass
 
-    return {"powered": True, "connected": False, "device": "", "icon": ICON_ON}
+    if connected_devices:
+        return {
+            "powered": True,
+            "connected": True,
+            "device": ", ".join(connected_devices),
+            "count": len(connected_devices),
+            "icon": ICON_CONNECTED,
+        }
+
+    return {"powered": True, "connected": False, "device": "", "count": 0, "icon": ICON_ON}
 
 
 def emit(bus):
