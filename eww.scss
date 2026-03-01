@@ -257,6 +257,26 @@ $transition-default: all 0.2s ease;
   }
 }
 
+// Music controls dropdown (separate window)
+.music-dropdown {
+  background-color: $bg;
+  border-radius: 12px;
+  padding: 6px;
+
+  > * + * { margin-left: 4px; }
+
+  .music-item {
+    padding: 6px;
+    border-radius: 8px;
+    min-width: 28px;
+    min-height: 28px;
+    transition: $transition-default;
+
+    &:hover { background-color: $bg-light; }
+    &.active { color: $accent; background-color: rgba($accent, 0.15); }
+  }
+}
+
 // Power dropdown (separate window)
 .power-dropdown {
   background-color: $bg;

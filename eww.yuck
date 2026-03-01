@@ -20,6 +20,10 @@
   "python3 scripts/bluetooth-watcher.py")
 (deflisten music-data :initial '{"artist":"","title":"","status":"Stopped"}'
   `playerctl metadata --player=YoutubeMusic --format '{"artist":"{{artist}}","title":"{{title}}","status":"{{status}}"}' --follow`)
+(deflisten music-shuffle :initial "Off"
+  "playerctl --player=YoutubeMusic --follow shuffle")
+(deflisten music-loop :initial "None"
+  "playerctl --player=YoutubeMusic --follow loop")
 
 
 ; ── Workspace + Layout Widget ────────────────────────────
@@ -150,22 +154,43 @@
            :onchange "scripts/set-volume.sh {}")))
 
 ; ── Music Widget ────────────────────────────────────────
-(defwidget music-widget []
+(defwidget music-widget [mon]
   (box :class "pill music-pill"
        :orientation "h"
        :halign "end"
        :valign "center"
        :space-evenly false
        :visible {music-data.status == "Playing" || music-data.status == "Paused"}
-    (button :class "ctrl-btn music-btn" :onclick "playerctl --player=YoutubeMusic play-pause"
+    (button :class "ctrl-btn music-btn" :onclick "eww open --toggle music-ctl-${mon}"
       (box :orientation "h" :valign "center" :space-evenly false
         (image :path "svg/music/music-note-svgrepo-com.svg" :image-width 16 :image-height 16)
         (label :class "music-label" :limit-width 35 :text {music-data.status == "Paused" ? "Paused" : "${music-data.artist} — ${music-data.title}"})))))
 
+; ── Music Controls Dropdown ────────────────────────────
+(defwidget music-ctl-widget [mon]
+  (box :class "music-dropdown" :orientation "h" :space-evenly false
+    (button :class "music-item ${music-shuffle == 'On' ? 'active' : ''}"
+            :onclick "playerctl --player=YoutubeMusic shuffle toggle"
+      (image :path "svg/music/shuffle-svgrepo-com.svg" :image-width 16 :image-height 16))
+    (button :class "music-item"
+            :onclick "playerctl --player=YoutubeMusic previous"
+      (image :path "svg/music/prev-svgrepo-com.svg" :image-width 16 :image-height 16))
+    (button :class "music-item"
+            :onclick "playerctl --player=YoutubeMusic play-pause"
+      (image :path {music-data.status == "Playing" ? "svg/music/pause-svgrepo-com.svg" : "svg/music/play-svgrepo-com.svg"}
+             :image-width 16 :image-height 16))
+    (button :class "music-item"
+            :onclick "playerctl --player=YoutubeMusic next"
+      (image :path "svg/music/next-svgrepo-com.svg" :image-width 16 :image-height 16))
+    (button :class "music-item ${music-loop != 'None' ? 'active' : ''}"
+            :onclick "scripts/cycle-loop.sh"
+      (image :path {music-loop == "Track" ? "svg/music/repeat-one-svgrepo-com.svg" : "svg/music/repeat-svgrepo-com.svg"}
+             :image-width 16 :image-height 16))))
+
 ; ── Right Section (music + controls) ──────────────────────
 (defwidget right-section [mon]
   (box :class "right-section" :orientation "h" :halign "end" :space-evenly false
-    (music-widget)
+    (music-widget :mon mon)
     (controls-widget :mon mon)))
 
 ; ── Top Bar Layout ────────────────────────────────────────
@@ -208,6 +233,15 @@
   :wm-ignore true
   (volume-ctl-widget))
 
+
+; ── Music Controls Dropdown Windows ───────────────────
+(defwindow music-ctl-0
+  :monitor 0
+  :geometry (geometry :x "-440px" :y "52px" :width "200px" :anchor "top right")
+  :stacking "overlay"
+  :windowtype "toolbar"
+  :wm-ignore true
+  (music-ctl-widget :mon 0))
 
 ; ── Calendar Dropdown Windows ─────────────────────────
 (defwindow calendar-0
