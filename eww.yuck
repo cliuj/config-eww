@@ -219,7 +219,7 @@
 ; ── Power Menu Dropdown Windows ─────────────────────────
 (defwindow power-menu-0
   :monitor 0
-  :geometry (geometry :x "-36px" :y "52px" :width "40px" :anchor "top right")
+  :geometry (geometry :x "-36px" :y "55px" :width "40px" :anchor "top right")
   :stacking "overlay"
   :windowtype "toolbar"
   :wm-ignore true
@@ -229,7 +229,7 @@
 ; ── Volume Dropdown Windows ─────────────────────────────
 (defwindow volume-ctl-0
   :monitor 0
-  :geometry (geometry :x "-95px" :y "52px" :width "40px" :height "140px" :anchor "top right")
+  :geometry (geometry :x "-95px" :y "55px" :width "40px" :height "140px" :anchor "top right")
   :stacking "overlay"
   :windowtype "toolbar"
   :wm-ignore true
@@ -243,14 +243,14 @@
 
 (defwindow tooltip-music-0
   :monitor 0
-  :geometry (geometry :x "-300" :y "52px" :width "500px" :height "30px" :anchor "top right")
+  :geometry (geometry :x "-300" :y "55px" :width "500px" :height "30px" :anchor "top right")
   :stacking "overlay" :windowtype "toolbar" :wm-ignore true
   (music-tooltip))
 
 ; ── Music Controls Dropdown Windows ───────────────────
 (defwindow music-ctl-0
   :monitor 0
-  :geometry (geometry :x "-440px" :y "52px" :width "200px" :anchor "top right")
+  :geometry (geometry :x "-430px" :y "55px" :width "200px" :anchor "top right")
   :stacking "overlay"
   :windowtype "toolbar"
   :wm-ignore true
@@ -259,7 +259,7 @@
 ; ── Calendar Dropdown Windows ─────────────────────────
 (defwindow calendar-0
   :monitor 0
-  :geometry (geometry :x "0%" :y "52px" :anchor "top center")
+  :geometry (geometry :x "0%" :y "55px" :anchor "top center")
   :stacking "overlay"
   :windowtype "toolbar"
   :wm-ignore true
@@ -281,18 +281,18 @@
 
 (defwindow tooltip-left-0
   :monitor 0
-  :geometry (geometry :x "30px" :y "52px" :width "200px" :height "30px" :anchor "top left")
+  :geometry (geometry :x "30px" :y "55px" :width "200px" :height "30px" :anchor "top left")
   :stacking "overlay" :windowtype "toolbar" :wm-ignore true
   (tooltip-popup))
 
 (defwindow tooltip-center-0
   :monitor 0
-  :geometry (geometry :x "0px" :y "52px" :width "200px" :height "30px" :anchor "top center")
+  :geometry (geometry :x "0px" :y "55px" :width "200px" :height "30px" :anchor "top center")
   :stacking "overlay" :windowtype "toolbar" :wm-ignore true
   (tooltip-popup))
 
 (defwindow tooltip-right-0
   :monitor 0
-  :geometry (geometry :x "-160px" :y "52px" :width "200px" :height "30px" :anchor "top right")
+  :geometry (geometry :x "-160px" :y "55px" :width "200px" :height "30px" :anchor "top right")
   :stacking "overlay" :windowtype "toolbar" :wm-ignore true
   (tooltip-popup))
