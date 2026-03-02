@@ -29,7 +29,7 @@
 ; ── Workspace + Layout Widget ────────────────────────────
 (defwidget workspaces-widget [wsdata]
   (box :class "pill" :orientation "h" :halign "start" :space-evenly false
-    (eventbox :onhover "eww update tooltip-id=layout; eww open tooltip-left-0"
+    (eventbox :onhover "eww open tooltip-left-0"
               :onhoverlost "eww close tooltip-left-0"
       (button :class "layout" :onclick "python3 scripts/cycle-layout.py next-layout"
         (image :path {wsdata.layout == "BSP" ? "svg/layouts/layout-svgrepo-com.svg"
@@ -51,7 +51,7 @@
     (button :class "datetime"
             :onclick "eww open --toggle calendar-${mon}"
       (label :text datetime))
-    (eventbox :onhover "eww update tooltip-id=weather; eww open tooltip-center-0"
+    (eventbox :onhover "eww open tooltip-center-0"
               :onhoverlost "eww close tooltip-center-0"
       (box :class "weather" :orientation "h" :valign "center" :space-evenly false
         (image :path {weather-data.icon} :image-width 16 :image-height 16)
@@ -279,17 +279,25 @@
                 : tooltip-id == "power" ? "Power"
                 : ""})))
 
+(defwidget layout-tooltip []
+  (box :class "tooltip-popup" :halign "center"
+    (label :text {bar-0.layout})))
+
 (defwindow tooltip-left-0
   :monitor 0
   :geometry (geometry :x "30px" :y "55px" :width "200px" :height "30px" :anchor "top left")
   :stacking "overlay" :windowtype "toolbar" :wm-ignore true
-  (tooltip-popup))
+  (layout-tooltip))
+
+(defwidget weather-tooltip []
+  (box :class "tooltip-popup" :halign "center"
+    (label :text {weather-data.condition})))
 
 (defwindow tooltip-center-0
   :monitor 0
   :geometry (geometry :x "0px" :y "55px" :width "200px" :height "30px" :anchor "top center")
   :stacking "overlay" :windowtype "toolbar" :wm-ignore true
-  (tooltip-popup))
+  (weather-tooltip))
 
 (defwindow tooltip-right-0
   :monitor 0
